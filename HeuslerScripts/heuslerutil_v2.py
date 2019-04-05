@@ -52,6 +52,7 @@ def superFullH(acell16):
 def swapSites(acell16, disorder):
     """
     The function takes the L21 cell and desired disorder, then it swaps the sites in the cell to get the desired POSCAR file.
+    Will work on this one to make it more robust (for IH as well).
     
     Input:
         acell16 : L21 cell as ase.Atoms object
@@ -61,56 +62,71 @@ def swapSites(acell16, disorder):
     """
     copyofacell16 = acell16
     if (disorder=='12.5'):
-        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
+        copyofacell16.positions[[8,7]] = copyofacell16.positions[[7,8]]
+        
     elif (disorder=='25'):
-        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
-        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
+        copyofacell16.positions[[8,7]] = copyofacell16.positions[[7,8]]
+        copyofacell16.positions[[4,11]] = copyofacell16.positions[[11,4]]
+        
     elif (disorder=='37.5'):
-        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
+        copyofacell16.positions[[8,7]] = copyofacell16.positions[[7,8]]
+        copyofacell16.positions[[4,11]] = copyofacell16.positions[[11,4]]
+        copyofacell16.positions[[1,9]] = copyofacell16.positions[[9,1]]
+        
     elif (disorder=='50'):
-        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]        
+        copyofacell16.positions[[8,7]] = copyofacell16.positions[[7,8]]
+        copyofacell16.positions[[4,11]] = copyofacell16.positions[[11,4]]
+        copyofacell16.positions[[1,9]] = copyofacell16.positions[[9,1]]
+        copyofacell16.positions[[2,10]] = copyofacell16.positions[[10,2]]
+        
     else : print('Please enter acceptable disorder amount: "12.5", "25", "37.5", or "50"')
     
     return copyofacell16
 
+def disorderSeriesMaker(cell):
+    cell125 = swapSites(cell, '12.5')
+    cartpos125 = cell125.get_positions()
+    print('\n New positions (12.5%):\n')
+    print(cartpos125)
+    cell125.write('cell125disorder', 'vasp')
+
+    cell25 = swapSites(cell, '25')
+    cartpos25 = cell25.get_positions()
+    print('\n New positions (25%):\n')
+    print(cartpos25)
+    cell25.write('cell25disorder', 'vasp')
+    
+    cell375 = swapSites(cell, '37.5')
+    cartpos375 = cell.get_positions()
+    print('\n New positions (37.5%):\n')
+    print(cartpos375)
+    cell375.write('cell375disorder', 'vasp')
+
+    cell50 = swapSites(cell, '50')
+    cartpos50 = cell50.get_positions()
+    print('\n New positions (50%):\n')
+    print(cartpos50)
+    cell50.write('cell50disorder', 'vasp')
+
+    print('\n Series has been made! Check the working directory for POSCARs \n')
+    return    
 ##
 
+# Make Full Heusler cell with desired X2YZ L21 structure
 zr2fesifull = makeFull16('Zr', 'Fe', 'Si', 6.545)
 zr2fesifull.write('zr2fesi16atom', 'vasp')
 
+# Get the index of each atom, their positions, and the lattice param to check the object.
 ions = zr2fesifull.get_chemical_symbols()
 cellleng = zr2fesifull.get_cell()
 cartpos = zr2fesifull.get_positions()
+print(zr2fesifull)
+print(cartpos)
+
+# Make the disordered lattices and print them, then write POSCARs
+disorderSeriesMaker(zr2fesifull)
 
 
-
-zr2fesifull.positions[[0,8]] = zr2fesifull.positions[[8,0]]
-zr2fesifull.write('zr2fesi16atom08defect', 'vasp')
-cartpos1 = zr2fesifull.get_positions()
-
-zr2fesifull.positions[[8,0]] = zr2fesifull.positions[[0,8]]
-zr2fesifull.positions[[8,1]] = zr2fesifull.positions[[1,8]]
-zr2fesifull.write('zr2fesi16atom18defect', 'vasp')
-cartpos2 = zr2fesifull.get_positions()
-
-zr2fesifull.positions[[8,1]] = zr2fesifull.positions[[1,8]]
-zr2fesifull.positions[[8,2]] = zr2fesifull.positions[[2,8]]
-zr2fesifull.write('zr2fesi16atom28defect', 'vasp')
-cartpos3 = zr2fesifull.get_positions()
-
-zr2fesifull.positions[[8,2]] = zr2fesifull.positions[[2,8]]
-zr2fesifull.positions[[8,3]] = zr2fesifull.positions[[3,8]]
-zr2fesifull.write('zr2fesi16atom38defect', 'vasp')
-cartpos4 = zr2fesifull.get_positions()
-
-zr2fesifull.positions[[8,3]] = zr2fesifull.positions[[3,8]]
-zr2fesifull.positions[[8,4]] = zr2fesifull.positions[[4,8]]
-zr2fesifull.write('zr2fesi16atom48defect', 'vasp')
-cartpos5 = zr2fesifull.get_positions()
-
-zr2fesifull.positions[[9,7]] = zr2fesifull.positions[[7,9]]
-zr2fesifull.write('zr2fesi16atom4879defect', 'vasp')
-cartpos6 = zr2fesifull.get_positions()
 
 #superZr2FeSiFull = superFullH(zr2fesifull)
 
