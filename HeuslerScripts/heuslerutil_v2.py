@@ -31,6 +31,27 @@ def makeFull16( X, Y, Z, cellParam ):
                 cell = (cellParam, cellParam, cellParam))
     return L21cell
 
+
+def makeInverse16( X, Y, Z, cellParam ): # CHANGE ME
+    """
+    Takes input for heusler lattice to create 16 atom cell. Allows manipulation to make slabs, defects, etc.
+
+    Inputs:
+    X : Atomic symbol of X site atom
+    Y : Atomic symbol of Y site atom
+    Z : Atomic symbol of Z site atom
+    cellparam : cell parameter
+    Outputs:
+    L21cell : ase.Atoms object with 16 atoms
+    """
+    a = cellParam
+    L21cell = Atoms((X, X, X, X, X, X, X, X, Y, Y, Y, Y, Z, Z, Z, Z),
+                positions = [(0,0,0), (.5*a,0,0), (0,.5*a,0), (.5*a,.5*a,0), (0,0,.5*a), (.5*a,0,.5*a), (0,.5*a,.5*a), (.5*a,.5*a,.5*a), # NOTE THIS IS STILL FULL HEUSLER
+                             (.25*a,.25*a,.25*a), (.75*a, .75*a, .25*a), (.75*a, .25*a, .75*a), (.25*a,.75*a,.75*a),
+                             (.75*a,.25*a,.25*a), (.25*a,.75*a,.25*a), (.25*a,.25*a,.75*a), (.75*a,.75*a,.75*a)],
+                cell = (cellParam, cellParam, cellParam))
+    return L21cell
+
 def superFullH(acell16):
     """
     Takes the 16 atom cell as input, then performs the translations to get supercell with the same X, Y, Z, and cell param.
@@ -39,7 +60,7 @@ def superFullH(acell16):
     X = ions[0]
     a = acell16.get_cell()[0,0]
     w = a/2
-    AddedX = Atoms((X, X, X,  X, X, X,  X, X, X,  X, X, X,  X, X, X,  X, X, X, X), 
+    AddedX = Atoms((X, X, X,  X, X, X,  X, X, X,  X, X, X,  X, X, X,  X, X, X, X),
                    positions = [(0,a,0), (a,0,0), (a,w,0),
                                 (a,a,0), (w,a,0), (0,a,w),
                                 (a,0,w), (a,w,w), (a,a,w),
@@ -109,7 +130,8 @@ def disorderSeriesMaker(cell):
     cell50.write('cell50disorder', 'vasp')
 
     print('\n Series has been made! Check the working directory for POSCARs \n')
-    return    
+    return
+    
 ##
 
 # Make Full Heusler cell with desired X2YZ L21 structure
