@@ -109,25 +109,25 @@ def disorderSeriesMaker(cell):
     cartpos125 = cell125.get_positions()
     print('\n New positions (12.5%):\n')
     print(cartpos125)
-    cell125.write('cell125disorder', 'vasp')
+#    cell125.write('cell125disorder', 'vasp')
 
     cell25 = swapSites(cell, '25')
     cartpos25 = cell25.get_positions()
     print('\n New positions (25%):\n')
     print(cartpos25)
-    cell25.write('cell25disorder', 'vasp')
+#    cell25.write('cell25disorder', 'vasp')
     
     cell375 = swapSites(cell, '37.5')
     cartpos375 = cell.get_positions()
     print('\n New positions (37.5%):\n')
     print(cartpos375)
-    cell375.write('cell375disorder', 'vasp')
+#    cell375.write('cell375disorder', 'vasp')
 
     cell50 = swapSites(cell, '50')
     cartpos50 = cell50.get_positions()
     print('\n New positions (50%):\n')
     print(cartpos50)
-    cell50.write('cell50disorder', 'vasp')
+#    cell50.write('cell50disorder', 'vasp')
 
     print('\n Series has been made! Check the working directory for POSCARs \n')
     return
