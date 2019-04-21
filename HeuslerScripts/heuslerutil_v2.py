@@ -1,4 +1,4 @@
-#!/home/jalendesktop/anaconda3/envs/aseenv/bin/python
+#!/anaconda3/envs/aseenv/bin/python
 # -*- coding: utf-8 -*-
 """
 # Created on Thu Apr  4 20:15:28 2019
@@ -32,7 +32,7 @@ def makeFull16( X, Y, Z, cellParam ):
     return L21cell
 
 
-def makeInverse16( X, Y, Z, cellParam ): # CHANGE ME
+def makeInverse16( X, Y, Z, cellParam ):
     """
     Takes input for heusler lattice to create 16 atom cell. Allows manipulation to make slabs, defects, etc.
 
@@ -42,15 +42,15 @@ def makeInverse16( X, Y, Z, cellParam ): # CHANGE ME
     Z : Atomic symbol of Z site atom
     cellparam : cell parameter
     Outputs:
-    L21cell : ase.Atoms object with 16 atoms
+    XAcell : ase.Atoms object with 16 atoms
     """
     a = cellParam
-    L21cell = Atoms((X, X, X, X, X, X, X, X, Y, Y, Y, Y, Z, Z, Z, Z),
-                positions = [(0,0,0), (.5*a,0,0), (0,.5*a,0), (.5*a,.5*a,0), (0,0,.5*a), (.5*a,0,.5*a), (0,.5*a,.5*a), (.5*a,.5*a,.5*a), # NOTE THIS IS STILL FULL HEUSLER
+    XAcell = Atoms((X, X, X, X, X, X, X, X, Y, Y, Y, Y, Z, Z, Z, Z),
+                positions = [(.5*a,0,0), (0,.5*a,0), (0,0,.5*a), (.5*a,.5*a,.5*a), (.75*a,.25*a,.25*a), (.25*a,.75*a,.25*a), (.25*a,.25*a,.75*a), (.75*a,.75*a,.75*a),
                              (.25*a,.25*a,.25*a), (.75*a, .75*a, .25*a), (.75*a, .25*a, .75*a), (.25*a,.75*a,.75*a),
-                             (.75*a,.25*a,.25*a), (.25*a,.75*a,.25*a), (.25*a,.25*a,.75*a), (.75*a,.75*a,.75*a)],
+                             (0,0,0), (.5*a,0,.5*a), (0,.5*a,.5*a), (.5*a,.5*a,0)],
                 cell = (cellParam, cellParam, cellParam))
-    return L21cell
+    return XAcell
 
 def superFullH(acell16):
     """
@@ -132,24 +132,43 @@ def disorderSeriesMaker(cell):
     print('\n Series has been made! Check the working directory for POSCARs \n')
     return
     
-##
-
+## Testing Full Heusler Utilities
 # Make Full Heusler cell with desired X2YZ L21 structure
-zr2fesifull = makeFull16('Zr', 'Fe', 'Si', 6.545)
-zr2fesifull.write('zr2fesi16atom', 'vasp')
+# zr2fesifull = makeFull16('Zr', 'Fe', 'Si', 6.545)
+# zr2fesifull.write('zr2fesi16atom', 'vasp')
 
 # Get the index of each atom, their positions, and the lattice param to check the object.
-ions = zr2fesifull.get_chemical_symbols()
-cellleng = zr2fesifull.get_cell()
-cartpos = zr2fesifull.get_positions()
-print(zr2fesifull)
-print(cartpos)
+#ions = zr2fesifull.get_chemical_symbols()
+#cellleng = zr2fesifull.get_cell()
+#cartpos = zr2fesifull.get_positions()
+#print(zr2fesifull)
+#print(cartpos)
+
+
 
 # Make the disordered lattices and print them, then write POSCARs
-disorderSeriesMaker(zr2fesifull)
+#disorderSeriesMaker(zr2fesifull)
+
+
+## Testing Inverse Heusler Utilities
+# Make Inverse Heusler cell with desired X2YZ XA structure
+zr2fesiIH = makeInverse16('Zr', 'Fe', 'Si', 6.545)
+# Get the index of each atom, their positions, and the lattice param to check the object.
+ions = zr2fesiIH.get_chemical_symbols()
+cellleng = zr2fesiIH.get_cell()
+cartpos = zr2fesiIH.get_positions()
+print("The Inverse Heusler Structure: Zr2FeSi")
+print("===========================================================")
+print("\n The ions are indexed in this order:")
+print(ions)
+print("\n The lattice parameters:")
+print(cellleng)
+print("\n The cartesian positions of the atoms:")
+print(cartpos)
 
 
 
+## Testing Supercells
 #superZr2FeSiFull = superFullH(zr2fesifull)
 
 #ions = zr2fesifull.get_chemical_symbols()
@@ -157,3 +176,6 @@ disorderSeriesMaker(zr2fesifull)
 #cartpos = zr2fesifull.get_positions()
 
 #superZr2FeSiFull.write('zr2fesi35atom', 'vasp')
+
+print("\n \n The end of the script has been reached.")
+print("===========================================================")
