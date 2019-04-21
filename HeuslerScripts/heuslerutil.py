@@ -49,6 +49,29 @@ def superFullH(acell16):
                                 (w,a,a)])
     return acell16.extend(AddedX)
 
+def swapSites(acell16, disorder):
+    """
+    The function takes the L21 cell and desired disorder, then it swaps the sites in the cell to get the desired POSCAR file.
+    
+    Input:
+        acell16 : L21 cell as ase.Atoms object
+        disorder : string with values '12.5', '25', '37.5', or '50' describing disorder percentage
+    Output:
+        disorderedcell : A new ase.Atoms object with desired disorder
+    """
+    copyofacell16 = acell16
+    if (disorder=='12.5'):
+        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
+    elif (disorder=='25'):
+        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
+        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
+    elif (disorder=='37.5'):
+        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]
+    elif (disorder=='50'):
+        copyofacell16.positions[[8,4]] = copyofacell16.positions[[4,8]]        
+    else : print('Please enter acceptable disorder amount: "12.5", "25", "37.5", or "50"')
+    
+    return copyofacell16
 
 ##
 
