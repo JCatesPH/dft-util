@@ -1,4 +1,4 @@
-#!/home/jalenc/.conda/envs/ZMCIntegral/bin/python python
+#!/usr/bin/python
 # coding: utf-8
 
 # # Testing example from github to see ZMCIntegral is working correctly.
@@ -6,6 +6,10 @@
 #
 # It is the integration of this function:
 # https://github.com/Letianwu/ZMCintegral/blob/master/examples/example01.png?raw=true
+
+import sys
+sys.path.append('/home/jmcates/ZMCIntEnv/lib/python2.7/site-packages')
+# print(sys.path)
 
 import math
 from numba import cuda
@@ -39,7 +43,7 @@ for i in range(4,20,4):
     t1 = time.time()
     times[i/4-1] = t1-t0
     results[i/4-1,i/4] = result
-    if (t1-t0) < timemin
+    if ((t1-t0) < timemin):
         timemin = t1-t0
         optimal_sigma = i
 
@@ -72,7 +76,7 @@ for i in range(2,10,2):
     t1 = time.time()
     times[i/4-1] = t1-t0
     results[i/4-1,i/4] = result
-    if (t1-t0) < timemin
+    if ((t1-t0) < timemin):
         timemin = t1-t0
         optimal_trials = i
 
