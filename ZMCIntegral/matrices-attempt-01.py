@@ -156,10 +156,12 @@ def Ds(kx, ky, qx, qy):
                             dds = dds + 2 * Gamm * (grgl + glga)
     return dds
 
+
+testeval = Ds(0.1, 0.1, 0.01, 0)
 # Test evaluation
 print('\n========================================================')
 print('The function is evaluated at (0.1,0.1,0.1,0) to be:')
-print(Ds(0.1, 0.1, 0.01, 0))
+print(testeval)
 print('\n========================================================')
 
 # Mahmoud:
