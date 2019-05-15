@@ -17,7 +17,7 @@
 # The import statements
 import math
 from numba import cuda
-import ZMCintegral
+import ZMCIntegral
 import time
 import numpy as np
 import scipy
@@ -41,17 +41,18 @@ shift = A * (eE0 / hOmg) ** 2
 
 # Ensure that cuda is used
 @cuda.jit(device=True)
+ # Makes the function below no longer callable, so a test evaluation can not be done with this.
 
-
-# Function given
-def Ds(kx, ky, qx, qy):
+# Function given with slight modification. I replaced all calls to kx, ky, qx, and qy with x[0], x[1], x[2], and x[3] respectively.
+# 	This modification effectively "vectorizes" the input.
+def Ds(x):
     N = 1
     dds = 0
     ds = 0
-    ek = A * (math.sqrt((kx) ** 2 + (ky) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
-    ekq = A * (math.sqrt((kx + qx) ** 2 + (ky + qy) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
-    xk = 2 * A * eE0 * math.sqrt((kx) ** 2 + (ky) ** 2) / hOmg ** 2
-    xkq = 2 * A * eE0 * math.sqrt((kx + qx) ** 2 + (ky + qy) ** 2) / hOmg ** 2
+    ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
+    ekq = A * (math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
+    xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
+    xkq = 2 * A * eE0 * math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2) / hOmg ** 2
 
     sing = np.arange(-(N - 1) / 2, (N - 1) / 2 + 1, 1)
     taninv1kp = 2 * np.arctan2(Gamm, ek - hOmg / 2 + hOmg * sing)
@@ -156,13 +157,13 @@ def Ds(kx, ky, qx, qy):
                             dds = dds + 2 * Gamm * (grgl + glga)
     return dds
 
-
-testeval = Ds(0.1, 0.1, 0.01, 0)
+# # As mentioned above, the function is no longer callable. This test is invalid.
+# testeval = Ds(0.1, 0.1, 0.01, 0)
 # Test evaluation
-print('\n========================================================')
-print('The function is evaluated at (0.1,0.1,0.1,0) to be:')
-print(testeval)
-print('\n========================================================')
+# print('\n========================================================')
+# print('The function is evaluated at (0.1,0.1,0.1,0) to be:')
+# print(testeval)
+# print('\n========================================================')
 
 # Mahmoud:
 #   "The integrand is Ds(kx,ky,qx,qy)/(2*pi)^3, and the limits of integration are kx=[-pi/a,pi/a],ky=[-pi/a,pi/a] , qx=[-pi/a,pi/a] and qy=[-pi/a,pi/a]."
@@ -189,7 +190,7 @@ print('  ky = (', kyi, ', ', kyf, ')')
 print('  qx = (', qxi, ', ', qxf, ')')
 print('  qy = (', qyi, ', ', qyf, ')')
 
-MC = ZMCintegral.MCintegral(Ds,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
+MC = ZMCIntegral.MCintegral(Ds,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
 
 # Setting the zmcintegral parameters
 MC.depth = 2
