@@ -191,10 +191,29 @@ print('  qy = (', qyi, ', ', qyf, ')')
 
 MC = ZMCintegral.MCintegral(Ds,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
 
+# Setting the zmcintegral parameters
+MC.depth = 2
+MC.sigma_multiplication = 5
+MC.num_trials = 5
+MC.available_GPU=[0]
+
+
+
+print('\n========================================================')
+print('depth = ', MC.depth)
+print('sigma_multiplication = ', MC.sigma_multiplication)
+print('num_trials = ', MC.num_trials)
+print('available_GPU = ', MC.available_GPU)
+
+# Evaluating the integral
+result = MC.evaluate()
 
 end = time.time()
 
+print('\n========================================================')
 print('Integration is complete!')
 print('\n========================================================')
+print('Result: ', result[0])
+print('std.  : ', result[1])
 print('Computed in ', end-start, ' seconds.')
 print('\n========================================================')
