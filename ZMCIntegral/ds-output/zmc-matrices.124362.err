@@ -1,0 +1,5 @@
+  File "./matrices-attempt-02.py", line 160
+    def Ds_gpu(x[0], x[1], x[2], x[3])
+                ^
+SyntaxError: invalid syntax
+srun: error: gpu-0-0: task 0: Exited with exit code 1
