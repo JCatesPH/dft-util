@@ -1,0 +1,5 @@
+srun: error: gpu-0-0: task 0: Exited with exit code 1
+Traceback (most recent call last):
+  File "./complex-no-cuda.py", line 29, in <module>
+    print('x = ', i, 'y = ', j, f(i,j))
+TypeError: f() takes 1 positional argument but 2 were given

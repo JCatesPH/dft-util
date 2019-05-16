@@ -1,0 +1,5 @@
+srun: error: gpu-0-0: task 0: Exited with exit code 1
+Traceback (most recent call last):
+  File "./complex-no-cuda.py", line 29, in <module>
+    xin[0] = i
+NameError: name 'xin' is not defined

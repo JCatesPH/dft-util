@@ -1,0 +1,5 @@
+srun: error: gpu-0-0: task 0: Exited with exit code 1
+Traceback (most recent call last):
+  File "./complex-no-cuda.py", line 34, in <module>
+    realval = f_real(2,3)
+TypeError: f_real() takes 1 positional argument but 2 were given

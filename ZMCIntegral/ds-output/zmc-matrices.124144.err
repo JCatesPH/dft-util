@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./matrices-attempt-01.py", line 20, in <module>
+    import ZMCIntegral
+ModuleNotFoundError: No module named 'ZMCIntegral'
+srun: error: gpu-0-0: task 0: Exited with exit code 1
