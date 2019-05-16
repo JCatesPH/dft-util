@@ -1,4 +1,5 @@
-#!/home/jmcates/miniconda3/envs/zmcint/bin/python
+#!
+# /home/jmcates/miniconda3/envs/zmcint/bin/python
 # coding: utf-8
 
 """
@@ -12,18 +13,18 @@ import ZMCIntegral
 import numpy as np
 
 def f(x1, x2):
-	return complex(x1,x2)
+    return complex(x1,x2)
 
 
 @cuda.jit(device=True)
 def f_real(y):
-	val = f(y[0], y[1]).real
-	return val
+    val = f(y[0], y[1]).real
+    return val
 
 @cuda.jit(device=True)
 def f_imag(y):
-	val = f(y[0], y[1]).imag
-	return val
+    val = f(y[0], y[1]).imag
+    return val
 
 
 
