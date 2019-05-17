@@ -6,8 +6,8 @@
 # Mahmoud:
 # "The integrand is Ds(kx,ky,qx,qy)/(2*pi)^3, and the limits of integration are kx=[-pi/a,pi/a],ky=[-pi/a,pi/a] , qx=[-pi/a,pi/a] and qy=[-pi/a,pi/a]."
 # "For qx and qy it is more efficient to use qx=[0.001,pi/a] and qy=0, because of the symmetry of the problem. kx and ky should be as we said before kx=[-pi/a,pi/a],ky=[-pi/a,pi/a]."
-# 
-# Dr. Tse: 
+#
+# Dr. Tse:
 # "Hi Jalen, what we need is a plot of the integrated result as a function of qx. My postdoc Mahmoud has a plot for that he obtained previously from another integration method that we can compare your MC results with. "
 
 # In[1]:
@@ -51,8 +51,9 @@ shift = A * (eE0 / hOmg) ** 2
 
 # In[46]:
 
+sing = np.array([0.])
 
-@cuda.jit()
+@cuda.jit(device=True)
 def modDs_real(x):
     N = 1
     dds = 0
@@ -64,16 +65,44 @@ def modDs_real(x):
 
     # arange is unsupported function in numba. This array will need to be adjusted for different values of N.
     # sing = np.arange(-(N - 1) / 2, (N - 1) / 2 + 1, 1)
-    sing = np.array([0.])
-    taninv1kp = 2 * np.arctan2(Gamm, ek - hOmg / 2 + hOmg * sing)
-    taninv1kqp = 2 * np.arctan2(Gamm, ekq - hOmg / 2 + hOmg * sing)
-    taninv1km = 2 * np.arctan2(Gamm, ek + hOmg / 2 + hOmg * sing)
-    taninv1kqm = 2 * np.arctan2(Gamm, ekq + hOmg / 2 + hOmg * sing)
 
-    lg1kp = complex(0, 1) * np.log(Gamm ** 2 + (ek - hOmg / 2 + hOmg * sing) ** 2)
-    lg1kqp = complex(0, 1) * np.log(Gamm ** 2 + (ekq - hOmg / 2 + hOmg * sing) ** 2)
-    lg1km = complex(0, 1) * np.log(Gamm ** 2 + (ek + hOmg / 2 + hOmg * sing) ** 2)
-    lg1kqm = complex(0, 1) * np.log(Gamm ** 2 + (ekq + hOmg / 2 + hOmg * sing) ** 2)
+    # taninv1kp = 2 * np.arctan2(Gamm, ek - hOmg / 2 + hOmg * sing)
+    # taninv1kqp = 2 * np.arctan2(Gamm, ekq - hOmg / 2 + hOmg * sing)
+    # taninv1km = 2 * np.arctan2(Gamm, ek + hOmg / 2 + hOmg * sing)
+    # taninv1kqm = 2 * np.arctan2(Gamm, ekq + hOmg / 2 + hOmg * sing)
+
+    ts1 = ek - hOmg / 2
+    ts2 = ekq - hOmg / 2
+    ts3 = ek + hOmg / 2
+    ts4 = ekq + hOmg / 2
+    arc2ts1 = math.atan2(Gamm, ts1)
+    arc2ts2 = math.atan2(Gamm, ts2)
+    arc2ts3 = math.atan2(Gamm, ts3)
+    arc2ts4 = math.atan2(Gamm, ts4)
+    taninv1kp = 2 * arc2ts1
+    taninv1kqp = 2 * arc2ts2
+    taninv1km = 2 * arc2ts3
+    taninv1kqm = 2 * arc2ts4
+
+    # lg1kp = complex(0, 1) * np.log(Gamm ** 2 + (ek - hOmg / 2 + hOmg * sing) ** 2)
+    # lg1kqp = complex(0, 1) * np.log(Gamm ** 2 + (ekq - hOmg / 2 + hOmg * sing) ** 2)
+    # lg1km = complex(0, 1) * np.log(Gamm ** 2 + (ek + hOmg / 2 + hOmg * sing) ** 2)
+    # lg1kqm = complex(0, 1) * np.log(Gamm ** 2 + (ekq + hOmg / 2 + hOmg * sing) ** 2)
+
+    logged1 = Gamm**2 + (ek - hOmg/2 + hOmg * sing)**2
+    logged2 = Gamm**2 + (ekq - hOmg/2 + hOmg * sing)**2
+    logged3 = Gamm**2 + (ek + hOmg/2 + hOmg * sing)**2
+    logged4 = Gamm**2 + (ekq + hOmg/2 + hOmg * sing)**2
+
+    ln1 = math.log(logged1)
+    ln2 = math.log(logged2)
+    ln3 = math.log(logged3)
+    ln4 = math.log(logged4)
+
+    lg1kp = complex(0, 1) * ln1
+    lg1kqp = complex(0, 1) * ln2
+    lg1km = complex(0, 1) * ln3
+    lg1kqm = complex(0, 1) * ln4
 
     ferp = np.heaviside(mu - hOmg / 2 - hOmg * sing, 0)
     ferm = np.heaviside(mu + hOmg / 2 - hOmg * sing, 0)
@@ -167,7 +196,7 @@ def modDs_real(x):
 
 # # Mahmoud:
 #  "The integrand is Ds(kx,ky,qx,qy)/(2*pi)^3, and the limits of integration are kx=[-pi/a,pi/a],ky=[-pi/a,pi/a] , qx=[-pi/a,pi/a] and qy=[-pi/a,pi/a]."
-# 
+#
 # "For qx and qy it is more efficient to use qx=[0.001,pi/a] and qy=0, because of the symmetry of the problem. kx and ky should be as we said before kx=[-pi/a,pi/a],ky=[-pi/a,pi/a]."
 
 # In[47]:
@@ -180,7 +209,7 @@ def modDs_real(x):
 def Ds_real(y):
 	val = Ds(y[0],y[1],y[2],y[3])
 	return val.real / (8*math.pi**3)
-''' 
+'''
 
 
 # Introducing suggested values of integration.
@@ -203,13 +232,12 @@ qyf = 0
 
 # In[49]:
 
-
-print('The limits of integration:')
+print('\n========================================================')
+print('\nThe limits of integration:')
 print('  kx = (', kxi, ', ', kxf, ')')
 print('  ky = (', kyi, ', ', kyf, ')')
 print('  qx = (', qxi, ', ', qxf, ')')
 print('  qy = (', qyi, ', ', qyf, ')')
-
 
 # Creating the ZMCintegral object for evaluation.
 
