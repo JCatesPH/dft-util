@@ -1,4 +1,4 @@
-#!
+#!/home/jalenc/.conda/envs/ZMCIntegral/bin/python
 # /home/jmcates/miniconda3/envs/zmcint/bin/python
 # coding: utf-8
 
@@ -47,17 +47,17 @@ MC_imag.available_GPU=[0]
 
 
 print('\n========================================================')
-print('depth = ', MC_real.depth)
+print('\ndepth = ', MC_real.depth)
 print('sigma_multiplication = ', MC_real.sigma_multiplication)
 print('num_trials = ', MC_real.num_trials)
 print('available_GPU = ', MC_real.available_GPU)
+print('\n========================================================')
 
 # Evaluating the integral
 real_result = MC_real.evaluate()
 imag_result = MC_imag.evaluate()
 
-print('\n========================================================')
-print('Integration is complete!')
+print('\nIntegration is complete!')
 print('\n========================================================')
 print('REAL PART:')
 print('Result: ', real_result[0])
