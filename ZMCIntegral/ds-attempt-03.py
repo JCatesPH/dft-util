@@ -66,10 +66,15 @@ def modDs_real(x):
     # arange is unsupported function in numba. This array will need to be adjusted for different values of N.
     # sing = np.arange(-(N - 1) / 2, (N - 1) / 2 + 1, 1)
 
+    ## NOTE: sing == 0 in this case, so any term multiplied by it is removed as it throws errors if not.
+    # From documentation, it seems that cuda in numba does not like arrays generally either.
+
     # taninv1kp = 2 * np.arctan2(Gamm, ek - hOmg / 2 + hOmg * sing)
     # taninv1kqp = 2 * np.arctan2(Gamm, ekq - hOmg / 2 + hOmg * sing)
     # taninv1km = 2 * np.arctan2(Gamm, ek + hOmg / 2 + hOmg * sing)
     # taninv1kqm = 2 * np.arctan2(Gamm, ekq + hOmg / 2 + hOmg * sing)
+
+    # math._func_ is used in place of np._func_ as cuda likes the former and throws error if latter.
 
     ts1 = ek - hOmg / 2
     ts2 = ekq - hOmg / 2
@@ -88,11 +93,14 @@ def modDs_real(x):
     # lg1kqp = complex(0, 1) * np.log(Gamm ** 2 + (ekq - hOmg / 2 + hOmg * sing) ** 2)
     # lg1km = complex(0, 1) * np.log(Gamm ** 2 + (ek + hOmg / 2 + hOmg * sing) ** 2)
     # lg1kqm = complex(0, 1) * np.log(Gamm ** 2 + (ekq + hOmg / 2 + hOmg * sing) ** 2)
-
-    logged1 = Gamm**2 + (ek - hOmg/2 + hOmg * sing)**2
-    logged2 = Gamm**2 + (ekq - hOmg/2 + hOmg * sing)**2
-    logged3 = Gamm**2 + (ek + hOmg/2 + hOmg * sing)**2
-    logged4 = Gamm**2 + (ekq + hOmg/2 + hOmg * sing)**2
+    squared1 = ek - hOmg/2
+    squared2 = ekq - hOmg/2
+    squared3 = ek + hOmg/2
+    squared4 = ekq + hOmg/2
+    logged1 = Gamm**2 + squared1**2
+    logged2 = Gamm**2 + squared2**2
+    logged3 = Gamm**2 + squared3**2
+    logged4 = Gamm**2 + squared4**2
 
     ln1 = math.log(logged1)
     ln2 = math.log(logged2)
