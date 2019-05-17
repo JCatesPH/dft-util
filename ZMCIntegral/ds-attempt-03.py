@@ -54,6 +54,13 @@ shift = A * (eE0 / hOmg) ** 2
 sing = np.array([0.])
 
 @cuda.jit(device=True)
+def my_heaviside(z):
+    if z <= 0 :
+	    return 0
+    else :
+	    return 1
+
+@cuda.jit(device=True)
 def modDs_real(x):
     N = 1
     dds = 0
@@ -89,10 +96,10 @@ def modDs_real(x):
     # lg1km = complex(0, 1) * np.log(Gamm ** 2 + (ek + hOmg / 2 + hOmg * sing) ** 2)
     # lg1kqm = complex(0, 1) * np.log(Gamm ** 2 + (ekq + hOmg / 2 + hOmg * sing) ** 2)
 
-    logged1 = Gamm**2 + (ek - hOmg/2 + hOmg * sing)**2
-    logged2 = Gamm**2 + (ekq - hOmg/2 + hOmg * sing)**2
-    logged3 = Gamm**2 + (ek + hOmg/2 + hOmg * sing)**2
-    logged4 = Gamm**2 + (ekq + hOmg/2 + hOmg * sing)**2
+    logged1 = Gamm**2 + (ek - hOmg/2)**2
+    logged2 = Gamm**2 + (ekq - hOmg/2)**2
+    logged3 = Gamm**2 + (ek + hOmg/2)**2
+    logged4 = Gamm**2 + (ekq + hOmg/2)**2
 
     ln1 = math.log(logged1)
     ln2 = math.log(logged2)
@@ -103,9 +110,15 @@ def modDs_real(x):
     lg1kqp = complex(0, 1) * ln2
     lg1km = complex(0, 1) * ln3
     lg1kqm = complex(0, 1) * ln4
+	
+    # ferp = np.heaviside(mu - hOmg / 2 - hOmg * sing, 0)
+    # ferm = np.heaviside(mu + hOmg / 2 - hOmg * sing, 0)
+	
+    heavi1 = mu - hOmg / 2
+    heavi2 = mu + hOmg / 2
 
-    ferp = np.heaviside(mu - hOmg / 2 - hOmg * sing, 0)
-    ferm = np.heaviside(mu + hOmg / 2 - hOmg * sing, 0)
+    ferp = my_heaviside(heavi1, 0)
+    ferm = my_heaviside(heavi2, 0)
 
     dbl = np.arange(-(N - 1), (N - 1) + 1, 1)
     taninv2k = 2 * np.arctan2(Gamm, ek - mu + hOmg * dbl)
