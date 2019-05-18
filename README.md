@@ -16,4 +16,7 @@ Contains python scripts with functions meant to manipulate ASE Atoms objects to 
   
 	Requirements: ase conda package (Atomic Simulation Environment) and its requirements.
   
+ZMCIntegral: 
+Research work with another professor to compute Monte Carlo integration of multivariable functions using CUDA libaries. The package, ZMCIntegral can be found at https://github.com/Letianwu/ZMCintegral .
   
+	Conda Requirements: numpy llvmlite numba cudatoolkit zmcintegral 
