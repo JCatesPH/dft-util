@@ -10,11 +10,10 @@
 # Dr. Tse:
 # "Hi Jalen, what we need is a plot of the integrated result as a function of qx. My postdoc Mahmoud has a plot for that he obtained previously from another integration method that we can compare your MC results with. "
 
-#!/home/jmcates/miniconda3/envs/zmcint/bin/python
-# coding: utf-8
-
-# # Proper interpreter:
-# /share/apps/python_shared/3.6.5/bin/python
+# # # CHANGE LOG : 
+#   v4 : 
+#       Extended Bessel function to eight terms and applied Horner's Algorithm to it for numerical efficiency.
+#       Removing commented out code for readability. Retaining copy with commented code as well.  
 
 # The import statements
 import math
@@ -55,8 +54,12 @@ def my_heaviside(z):
 def my_Bessel(z):
     # Bessel functions are sort of ugly, but this being first kind of zero order simplifies it.
     # I write out the series first few terms to approximate it for zero-order, first-kind.
-    val = 1 - z**2 / 4 + z**4 / 64 - z**6 / 2304 + z**8 / 147456  # and so on
-    return val
+
+        # CHANGE FOR v4: Changing polynomial evaluation for efficiency (SEE Horner's Algorithm). Extending number of terms.
+    # val = 1 - z**2 / 4 + z**4 / 64 - z**6 / 2304 + z**8 / 147456  # and so on
+    # Carrying the series to eight terms ensures that the error in the series is < machine_epsilon when z < 1. 
+    # Approximately: z1 <~ 2.1, z2 <~ 3.33  implies  error <~ 2.15E-6
+    return val = 1 + z**2 / 4 * (-1 + z**2 / 16 * (1 + z**2 / 36 * (-1 + z**2 / 64 * (1 + z**2 / 100 * (-1 + z**2 / 144 * (1 + z**2 / 196 * (-1 + z**2 / 256)))))))
 
 
 @cuda.jit(device=True)

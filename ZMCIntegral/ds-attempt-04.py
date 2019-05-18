@@ -10,11 +10,13 @@
 # Dr. Tse:
 # "Hi Jalen, what we need is a plot of the integrated result as a function of qx. My postdoc Mahmoud has a plot for that he obtained previously from another integration method that we can compare your MC results with. "
 
-#!/home/jmcates/miniconda3/envs/zmcint/bin/python
-# coding: utf-8
 
-# # Proper interpreter:
-# /share/apps/python_shared/3.6.5/bin/python
+# # # CHANGE LOG : 
+#   v4 : 
+#       Extended Bessel function to eight terms and applied Horner's Algorithm to it for numerical efficiency.
+#           Eight terms is not enough as z > 1. So, ELEVEN terms will be used. n = 11 => err <~ E-14
+#       Removing commented out code for readability. Retaining copy with commented code as well.
+
 
 # The import statements
 import math
@@ -53,56 +55,53 @@ def my_heaviside(z):
 
 @cuda.jit(device=True)
 def my_Bessel(z):
-    # Bessel functions are sort of ugly, but this being first kind of zero order simplifies it.
-    # I write out the series first few terms to approximate it for zero-order, first-kind.
-    val = 1 - z**2 / 4 + z**4 / 64 - z**6 / 2304 + z**8 / 147456  # and so on
-    return val
+    # CHANGE FOR v4: Changing polynomial evaluation for efficiency (SEE Horner's Algorithm). Extending number of terms.
+    # Carrying the series to eight terms ensures that the error in the series is < machine_epsilon when z < 1. 
+    # Approximately: z1 <~ 2.1, z2 <~ 3.33  implies  error <~ 2.15E-6
+    # return val = 1 + z**2 / 4 * (-1 + z**2 / 16 * (1 + z**2 / 36 * (-1 + z**2 / 64 * (1 + z**2 / 100 * (-1 + z**2 / 144 * (1 + z**2 / 196 * (-1 + z**2 / 256)))))))
+    # NOW GOING TO ELEVEN TERMS. Writing Horner's method in loop now for readability, efficiency, and scalability.
+    val = 1
+    for i in range(11, 0, -1):
+        denom = 2
+        numer = z**2
+        for j in range(0, i, 1):
+            denom = denom + 2
+        if (i % 2 == 1):
+            val = val * numer / denom**2 - 1
+        else:
+            val = val * numer / denom**2 + 1
+    return val + 1
+
 
 
 @cuda.jit(device=True)
 def modDs_real(x):
-    # N = 1 # Just plugged this in everywhere it went.
     dds = 0
-    # ds = 0 # UNUSED
     ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     ekq = A * (math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
     xkq = 2 * A * eE0 * math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2) / hOmg ** 2
 
-    # arange is unsupported function in numba. This array will need to be adjusted for different values of N.
-    # sing = np.arange(-(N - 1) / 2, (N - 1) / 2 + 1, 1)
-
-    ## NOTE: sing == 0 in this case, so any term multiplied by it is removed as it throws errors if not.
-    # From documentation, it seems that cuda in numba does not like arrays generally either.
-
-    # taninv1kp = 2 * np.arctan2(Gamm, ek - hOmg / 2 + hOmg * sing)
-    # taninv1kqp = 2 * np.arctan2(Gamm, ekq - hOmg / 2 + hOmg * sing)
-    # taninv1km = 2 * np.arctan2(Gamm, ek + hOmg / 2 + hOmg * sing)
-    # taninv1kqm = 2 * np.arctan2(Gamm, ekq + hOmg / 2 + hOmg * sing)
-
-    # math._func_ is used in place of np._func_ as cuda likes the former and throws error if latter.
-
     ts1 = ek - hOmg / 2
     ts2 = ekq - hOmg / 2
     ts3 = ek + hOmg / 2
     ts4 = ekq + hOmg / 2
+
     arc2ts1 = math.atan2(Gamm, ts1)
     arc2ts2 = math.atan2(Gamm, ts2)
     arc2ts3 = math.atan2(Gamm, ts3)
     arc2ts4 = math.atan2(Gamm, ts4)
+
     taninv1kp = 2 * arc2ts1
     taninv1kqp = 2 * arc2ts2
     taninv1km = 2 * arc2ts3
     taninv1kqm = 2 * arc2ts4
 
-    # lg1kp = complex(0, 1) * np.log(Gamm ** 2 + (ek - hOmg / 2 + hOmg * sing) ** 2)
-    # lg1kqp = complex(0, 1) * np.log(Gamm ** 2 + (ekq - hOmg / 2 + hOmg * sing) ** 2)
-    # lg1km = complex(0, 1) * np.log(Gamm ** 2 + (ek + hOmg / 2 + hOmg * sing) ** 2)
-    # lg1kqm = complex(0, 1) * np.log(Gamm ** 2 + (ekq + hOmg / 2 + hOmg * sing) ** 2)
     squared1 = ek - hOmg/2
     squared2 = ekq - hOmg/2
     squared3 = ek + hOmg/2
     squared4 = ekq + hOmg/2
+
     logged1 = Gamm**2 + squared1**2
     logged2 = Gamm**2 + squared2**2
     logged3 = Gamm**2 + squared3**2
@@ -123,39 +122,21 @@ def modDs_real(x):
     lg1km = complex(0, 1) * ln3
     lg1kqm = complex(0, 1) * ln4
 	
-    # ferp = np.heaviside(mu - hOmg / 2 - hOmg * sing, 0)
-    # ferm = np.heaviside(mu + hOmg / 2 - hOmg * sing, 0)
-	
     heavi1 = mu - hOmg / 2
     heavi2 = mu + hOmg / 2
 
     ferp = my_heaviside(heavi1)
     ferm = my_heaviside(heavi2)
 
-    # dbl = np.arange(-(N - 1), (N - 1) + 1, 1)
-    # dbl = 0
-    ## NOTE: dbl == 0 in this case, so any term multiplied by it is removed as it throws errors if not.
-    # From documentation, it seems that cuda in numba does not like arrays generally either.
-    
-    # taninv2k = 2 * np.arctan2(Gamm, ek - mu + hOmg * dbl)
-    # taninv2kq = 2 * np.arctan2(Gamm, ekq - mu + hOmg * dbl)
     taninv2k = 2 * math.atan2(Gamm, ek - mu)
     taninv2kq = 2 * math.atan2(Gamm, ekq - mu)
 
-    # lg2k = complex(0, 1) * np.log(Gamm ** 2 + (ek - mu + hOmg * dbl) ** 2)
-    # lg2kq = complex(0, 1) * np.log(Gamm ** 2 + (ekq - mu + hOmg * dbl) ** 2)
     lg2k = complex(0, 1) * math.log(Gamm ** 2 + (ek - mu) ** 2)
     lg2kq = complex(0, 1) * math.log(Gamm ** 2 + (ekq - mu) ** 2)
 
-
-    # besk = scipy.special.jv(dbl, xk)
-    # beskq = scipy.special.jv(dbl, xkq)
     besk = my_Bessel(xk)
     beskq = my_Bessel(xkq)
 
-    # Will attempt to compute these Bessel functions myself. Conveniently, dbl (order) of them is zero.
-
-    # fac1 = ek - ekq + hOmg * dbl
     fac1 = ek - ekq
 
     fac2 = fac1 + 2 * complex(0, 1) * Gamm
@@ -163,78 +144,6 @@ def modDs_real(x):
 
 
     # NOTE: N = 1 implies all loops below will be evaluated once.
-    '''
-    for n in range(0, N):
-        for alpha in range(0, N):
-            for beta in range(0, N):
-                for gamma in range(0, N):
-                    for s in range(0, N):
-                        for l in range(0, N):
-                            p1p = fac1[beta - gamma + N - 1] * (
-                                    taninv1kp - taninv2k - lg1kp + lg2k)
-                            p2p = fac2 * (
-                                    taninv1kp[beta] - taninv2k[s + beta] + lg1kp[beta] - lg2k[s + beta])
-                            p3p = fac3[alpha - beta + N - 1] * (
-                                    -taninv1kqp[gamma] + taninv2kq[s + gamma] - lg1kqp[gamma] + lg2kq[
-                                s + gamma])
-
-                            p1m = fac1[beta - gamma + N - 1] * (
-                                    taninv1km - taninv2k - lg1km + lg2k)
-
-                            p2m = fac2 * (
-                                    taninv1km[beta] - taninv2k[s + beta] + lg1km[beta] - lg2k[s + beta])
-
-                            p3m = fac3[alpha - beta + N - 1] * (
-                                    -taninv1kqm[gamma] + taninv2kq[s + gamma] - lg1kqm[gamma] + lg2kq[
-                                s + gamma])
-
-                            d1 = -2 * complex(0, 1) * fac1[beta - gamma + N - 1] * fac2 *                                  fac3[
-                                     alpha - beta + N - 1]
-
-                            omint1p = ferp[s] * ((p1p + p2p + p3p) / d1)
-
-                            omint1m = ferm[s] * ((p1m + p2m + p3m) / d1)
-
-                            bess1 = beskq[gamma - n + N - 1] * beskq[gamma - l + N - 1] * besk[beta - l + N - 1] * besk[
-                                beta - s + N - 1] * besk[alpha - s + N - 1] * besk[alpha - n + N - 1]
-
-                            grgl = bess1 * (omint1p - omint1m)
-
-                            pp1p = fac1[alpha - beta + N - 1] * (
-                                    -taninv1kqp[gamma] + taninv2kq[s + gamma] - lg1kqp[gamma] + lg2kq[
-                                s + gamma])
-
-                            pp2p = fac2 * (
-                                    -taninv1kqp[beta] + taninv2kq[s + beta] + lg1kqp[beta] - lg2kq[
-                                s + beta])
-
-                            pp3p = fac3[beta - gamma + N - 1] * (
-                                    taninv1kp - taninv2k - lg1kp + lg2k)
-
-                            pp1m = fac1[alpha - beta + N - 1] * (
-                                    -taninv1kqm[gamma] + taninv2kq[s + gamma] - lg1kqm[gamma] + lg2kq[
-                                s + gamma])
-
-                            pp2m = fac2 * (
-                                    -taninv1kqm[beta] + taninv2kq[s + beta] + lg1kqm[beta] - lg2kq[
-                                s + beta])
-
-                            pp3m = fac3[beta - gamma + N - 1] * (
-                                    taninv1km - taninv2k - lg1km + lg2k)
-
-                            d2 = -2 * complex(0, 1) * fac1[alpha - beta + N - 1] * fac2 *                                  fac3[
-                                     beta - gamma + N - 1]
-
-                            omint2p = ferp[s] * ((pp1p + pp2p + pp3p) / d2)
-
-                            omint2m = ferm[s] * ((pp1m + pp2m + pp3m) / d2)
-
-                            bess2 = beskq[gamma - n + N - 1] * beskq[gamma - s + N - 1] * beskq[beta - s + N - 1] *                                     beskq[beta - l + N - 1] * besk[alpha - l + N - 1] * besk[alpha - n + N - 1]
-
-                            glga = bess2 * (omint2p - omint2m)
-
-                            dds = dds + 2 * Gamm * (grgl + glga)
-    '''
     p1p = fac1 * (taninv1kp - taninv2k - lg1kp + lg2k)
     p2p = fac2 * (taninv1kp - taninv2k + lg1kp - lg2k)
     p3p = fac3 * (-taninv1kqp + taninv2kq - lg1kqp + lg2kq)
