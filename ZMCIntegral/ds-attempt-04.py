@@ -58,18 +58,7 @@ def my_Bessel(z):
     # CHANGE FOR v4: Changing polynomial evaluation for efficiency (SEE Horner's Algorithm). Extending number of terms.
     # Carrying the series to eight terms ensures that the error in the series is < machine_epsilon when z < 1. 
     # Approximately: z1 <~ 2.1, z2 <~ 3.33  implies  error <~ 2.15E-6
-    # return val = 1 + z**2 / 4 * (-1 + z**2 / 16 * (1 + z**2 / 36 * (-1 + z**2 / 64 * (1 + z**2 / 100 * (-1 + z**2 / 144 * (1 + z**2 / 196 * (-1 + z**2 / 256)))))))
-    # NOW GOING TO ELEVEN TERMS. Writing Horner's method in loop now for readability, efficiency, and scalability.
-    val = 1
-    for i in range(11, 0, -1):
-        denom = 2
-        numer = z**2
-        for j in range(0, i, 1):
-            denom = denom + 2
-        if (i % 2 == 1):
-            val = val * numer / denom**2 - 1
-        else:
-            val = val * numer / denom**2 + 1
+    val = z**2 / 4 * (-1 + z**2 / 16 * (1 + z**2 / 36 * (-1 + z**2 / 64 * (1 + z**2 / 100 * (-1 + z**2 / 144 * (1 + z**2 / 196 * (-1 + z**2 / 256)))))))
     return val + 1
 
 
