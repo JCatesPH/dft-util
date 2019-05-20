@@ -11,8 +11,8 @@
 # "Hi Jalen, what we need is a plot of the integrated result as a function of qx. My postdoc Mahmoud has a plot for that he obtained previously from another integration method that we can compare your MC results with. "
 
 
-# # # CHANGE LOG : 
-#   v4 : 
+# # # CHANGE LOG :
+#   v4 :
 #       Extended Bessel function to eight terms and applied Horner's Algorithm to it for numerical efficiency.
 #           Eight terms is not enough as z > 1. So, ELEVEN terms will be used. n = 11 => err <~ E-14
 #       Removing commented out code for readability. Retaining copy with commented code as well.
@@ -46,7 +46,7 @@ shift = A * (eE0 / hOmg) ** 2
 sing = np.array([0.])
 
 @cuda.jit(device=True)
-def my_heaviside(z): 
+def my_heaviside(z):
     # Wrote this Heaviside expression with it cast in cuda to avoid error below.
     if z <= 0 :
 	    return 0
@@ -56,7 +56,7 @@ def my_heaviside(z):
 @cuda.jit(device=True)
 def my_Bessel(z):
     # CHANGE FOR v4: Changing polynomial evaluation for efficiency (SEE Horner's Algorithm). Extending number of terms.
-    # Carrying the series to eight terms ensures that the error in the series is < machine_epsilon when z < 1. 
+    # Carrying the series to eight terms ensures that the error in the series is < machine_epsilon when z < 1.
     # Approximately: z1 <~ 2.1, z2 <~ 3.33  implies  error <~ 2.15E-6
     val = z**2 / 4 * (-1 + z**2 / 16 * (1 + z**2 / 36 * (-1 + z**2 / 64 * (1 + z**2 / 100 * (-1 + z**2 / 144 * (1 + z**2 / 196 * (-1 + z**2 / 256)))))))
     return val + 1
@@ -72,6 +72,11 @@ def modDs_real(x):
     # ekq = A * (math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     # xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
     # xkq = 2 * A * eE0 * math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2) / hOmg ** 2
+
+    ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
+    ekq = A * (math.sqrt((x[0] + x[2]) ** 2 + (x[1] + 0) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
+    xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
+    xkq = 2 * A * eE0 * math.sqrt((x[0] + x[2]) ** 2 + (x[1] + 0) ** 2) / hOmg ** 2
 
     ts1 = ek - hOmg / 2
     ts2 = ekq - hOmg / 2
@@ -112,7 +117,7 @@ def modDs_real(x):
     lg1kqp = complex(0, 1) * ln2
     lg1km = complex(0, 1) * ln3
     lg1kqm = complex(0, 1) * ln4
-	
+
     heavi1 = mu - hOmg / 2
     heavi2 = mu + hOmg / 2
 
@@ -205,11 +210,11 @@ print('  qy = (', qyi, ', ', qyf, ')')
 
 # Creating the ZMCintegral object for evaluation.
 
-MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
+MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf]])
 
 # Setting the zmcintegral parameters
 MC.depth = 3
-MC.sigma_multiplication = 10**20
+MC.sigma_multiplication = 10**2
 MC.num_trials = 10
 # MC.available_GPU=[0]
 
