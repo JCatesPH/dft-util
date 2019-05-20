@@ -206,10 +206,10 @@ print('  qy = (', qyi, ', ', qyf, ')')
 MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
 
 # Setting the zmcintegral parameters
-MC.depth = 3
-MC.sigma_multiplication = 10**20
-MC.num_trials = 10
-# MC.available_GPU=[0]
+MC.depth = 6
+MC.sigma_multiplication = 10**10
+MC.num_trials = 15
+MC.available_GPU=[0]
 
 
 print('\n========================================================')
@@ -247,4 +247,3 @@ print('Computed in ', end-start, ' seconds.')
 print('\n========================================================')
 
 
-# print(result[2]) # DOES NOT WORK

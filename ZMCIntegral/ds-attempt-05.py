@@ -65,11 +65,13 @@ def my_Bessel(z):
 
 @cuda.jit(device=True)
 def modDs_real(x):
+    # MADE A BREAKTHROUGH ON ZMCINTEGRAL NOT CONVERGING!!
+    # NEED TO SET CONSTANT INPUT VARIABLES AND NOT PASS AS ARGUMENTS
     dds = 0
-    ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
-    ekq = A * (math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
-    xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
-    xkq = 2 * A * eE0 * math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2) / hOmg ** 2
+    # ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
+    # ekq = A * (math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
+    # xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
+    # xkq = 2 * A * eE0 * math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2) / hOmg ** 2
 
     ts1 = ek - hOmg / 2
     ts2 = ekq - hOmg / 2

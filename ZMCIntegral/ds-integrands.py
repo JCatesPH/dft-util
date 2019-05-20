@@ -208,7 +208,7 @@ MC1 = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]
 
 # Setting the zmcintegral parameters
 MC1.depth = 3
-MC1.sigma_multiplication = 10**12
+MC1.sigma_multiplication = 10**15
 MC1.num_trials = 10
 # MC.available_GPU=[0] # Want to see detected number on hpc.
 
@@ -276,7 +276,7 @@ MC2 = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]
 
 # Setting the zmcintegral parameters
 MC2.depth = 3
-MC2.sigma_multiplication = 10**12
+MC2.sigma_multiplication = 10**15
 MC2.num_trials = 10
 # MC.available_GPU=[0] # Want to see detected number on hpc.
 
