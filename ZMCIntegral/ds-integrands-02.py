@@ -188,26 +188,9 @@ def modDs_real(x):
 
 # Introducing suggested values of integration.
 
-kxi = - math.pi / a
-kxf = math.pi / a
+	
 
-kyi = - math.pi / a
-kyf = math.pi / a
-
-qxi = 0.001
-qxf = math.pi / a
-
-qyi = 0
-qyf = 0
-
-# Creating the ZMCintegral object for evaluation.
-
-MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf]])
-
-# Setting the zmcintegral parameters
-MC.depth = 3
-MC.sigma_multiplication = 10
-MC.num_trials = 10
+	
 # MC.available_GPU=[0]
 
 print('Following values are constant for all integrations.')
@@ -218,37 +201,53 @@ print('num_trials = 10')
 print('available_GPU = [0]')
 print('\n========================================================')
 
+resultArray = np.empty(12)
+errArray = np.empty(12)
+i = 0
 
-# # Evaluating integral:
 
 start = time.time()
-result = MC.evaluate()
+
+for n in np.linspace(.001, .785, 12)
+	kxi = - math.pi / a
+	kxf = math.pi / a
+
+	kyi = - math.pi / a
+	kyf = math.pi / a
+
+	qxi = n
+	qxf = n + .001
+
+	qy = 0
+	
+	# Creating the ZMCintegral object for evaluation.
+
+	MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf]])
+	# Setting the zmcintegral parameters
+	MC.depth = 3
+	MC.sigma_multiplication = 10
+	MC.num_trials = 10
+	
+	result = MC.evaluate()
+	print('Result ', i, ': ', result[0], ' with error: ', result[1])
+	resultArray[i] = result[0]
+	errArray[i] = result[1]
+	i = i + 1
+	
+
 end = time.time()
-
-print('\n========================================================')
-print('\nThe limits of integration:')
-print('  kx = (', kxi, ', ', kxf, ')')
-print('  ky = (', kyi, ', ', kyf, ')')
-print('  qx = (', qxi, ', ', qxf, ')')
-print('  qy = (', qyi, ', ', qyf, ')')
-print('\n========================================================')
-print('\ndepth = ', MC.depth)
-print('sigma_multiplication = ', MC.sigma_multiplication)
-print('num_trials = ', MC.num_trials)
-print('available_GPU = ', MC.available_GPU)
-print('\n========================================================')
-print('\n========================================================')
-print('Integration is complete!')
-print('\n========================================================')
-print('Result: ', result[0])
-print('std.  : ', result[1])
-print('\n========================================================')
-
 
 print('================================================================')
 print('kxi  | kxf  | kyi  | kyf  | qxi  | qxf  | qy   | integrand | err')
 print('================================================================')
 
+i = 0
+for n in np.linspace(.001, .785, 12)
+	print('%.3f | %.3f | %.3f | %.3f | %.3f | %.3f | 0   | %9.4f | %5.3f ' % (kxi, kxf, kyi, kyf, n, n+.001, resultArray[i], errArray[i]))
+	i = i + 1
 
-
+print('================================================================')
 print('Computed in ', end-start, ' seconds.')
+print('Process completed successfully!')
+print('================================================================\n')
+
