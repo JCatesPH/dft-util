@@ -196,19 +196,19 @@ def modDs_real(x):
 print('Following values are constant for all integrations.')
 print('\n========================================================')
 print('\ndepth = 3')
-print('sigma_multiplication = 10')
+print('sigma_multiplication = 100')
 print('num_trials = 10')
 print('available_GPU = [0]')
 print('\n========================================================')
 
-resultArray = np.empty(12)
-errArray = np.empty(12)
+resultArray = np.empty(15)
+errArray = np.empty(15)
 i = 0
 
 
 start = time.time()
 
-for n in np.linspace(.001, .785, 12)
+for n in np.linspace(.001, .785, 15):
 	kxi = - math.pi / a
 	kxf = math.pi / a
 
@@ -216,7 +216,7 @@ for n in np.linspace(.001, .785, 12)
 	kyf = math.pi / a
 
 	qxi = n
-	qxf = n + .001
+	qxf = n + .05
 
 	qy = 0
 	
@@ -225,7 +225,7 @@ for n in np.linspace(.001, .785, 12)
 	MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf]])
 	# Setting the zmcintegral parameters
 	MC.depth = 3
-	MC.sigma_multiplication = 10
+	MC.sigma_multiplication = 100
 	MC.num_trials = 10
 	
 	result = MC.evaluate()
@@ -242,8 +242,8 @@ print('kxi  | kxf  | kyi  | kyf  | qxi  | qxf  | qy   | integrand | err')
 print('================================================================')
 
 i = 0
-for n in np.linspace(.001, .785, 12)
-	print('%.3f | %.3f | %.3f | %.3f | %.3f | %.3f | 0   | %9.4f | %5.3f ' % (kxi, kxf, kyi, kyf, n, n+.001, resultArray[i], errArray[i]))
+for n in np.linspace(.001, .785, 15):
+	print('%.3f | %.3f | %.3f | %.3f | %.3f | %.3f | 0   | %9.4f | %5.3f ' % (kxi, kxf, kyi, kyf, n, n+.05, resultArray[i], errArray[i]))
 	i = i + 1
 
 print('================================================================')
