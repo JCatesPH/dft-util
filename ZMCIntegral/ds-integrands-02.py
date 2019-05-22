@@ -201,14 +201,14 @@ print('num_trials = 10')
 print('available_GPU = [0]')
 print('\n========================================================')
 
-resultArray = np.empty(15)
-errArray = np.empty(15)
+resultArray = np.empty(25)
+errArray = np.empty(25)
 i = 0
 
 
 start = time.time()
 
-for n in np.linspace(.001, .785, 15):
+for n in np.linspace(.001, .785, 25):
 	kxi = - math.pi / a
 	kxf = math.pi / a
 
@@ -216,7 +216,7 @@ for n in np.linspace(.001, .785, 15):
 	kyf = math.pi / a
 
 	qxi = n
-	qxf = n + .05
+	qxf = n + .025
 
 	qy = 0
 	
@@ -242,8 +242,8 @@ print('kxi  | kxf  | kyi  | kyf  | qxi  | qxf  | qy   | integrand | err')
 print('================================================================')
 
 i = 0
-for n in np.linspace(.001, .785, 15):
-	print('%.3f | %.3f | %.3f | %.3f | %.3f | %.3f | 0   | %9.4f | %5.3f ' % (kxi, kxf, kyi, kyf, n, n+.05, resultArray[i], errArray[i]))
+for n in np.linspace(.001, .785, 25):
+	print('%.3f |%.3f |%.3f |%.3f |%.3f |%.3f | 0   | %.8E | %.3E ' % (kxi, kxf, kyi, kyf, n, n+.05, resultArray[i], errArray[i]))
 	i = i + 1
 
 print('================================================================')
