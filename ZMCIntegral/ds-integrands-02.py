@@ -175,9 +175,9 @@ def modDs_real(x):
 
     glga = bess2 * (omint2p - omint2m)
 
-    dds = dds + 2 * Gamm * (grgl + glga)
+    dds = dds + Gamm * (grgl + glga) / (8 * math.pi**3)
 
-    return dds.real / (8*math.pi**3)
+    return - 16 * math.pi * dds.real
 
 
 # # Mahmoud:
