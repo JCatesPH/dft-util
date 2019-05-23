@@ -1,0 +1,2 @@
+/home/jmcates/miniconda3/envs/zmcint/bin/python: can't open file './chi.py': [Errno 2] No such file or directory
+srun: error: gpu-0-0: task 0: Exited with exit code 2

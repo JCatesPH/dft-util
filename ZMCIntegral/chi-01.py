@@ -68,6 +68,8 @@ def modDs_real(x):
     # MADE A BREAKTHROUGH ON ZMCINTEGRAL NOT CONVERGING!!
     # NEED TO SET CONSTANT INPUT VARIABLES AND NOT PASS AS ARGUMENTS
     dds = 0
+    qx = 0.1
+
 
     ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     ekq = A * (math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
@@ -171,7 +173,7 @@ def modDs_real(x):
 
     glga = bess2 * (omint2p - omint2m)
 
-    dds = dds + Gamm * (grgl + glga) / (8 * math.pi**3)
+    dds = dds + Gamm * (grgl + glga) / (4 * math.pi**3)
 
     return - 16 * math.pi * dds.real
 
@@ -197,8 +199,8 @@ print('num_trials = 10')
 print('available_GPU = [0]')
 print('\n========================================================')
 
-resultArray = np.empty(1)
-errArray = np.empty(1)
+resultArray = np.empty(3)
+errArray = np.empty(3)
 i = 0
 
 

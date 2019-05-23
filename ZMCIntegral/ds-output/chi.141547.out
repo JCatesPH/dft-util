@@ -1,0 +1,21 @@
+Following values are constant for all integrations.
+
+========================================================
+
+depth = 3
+sigma_multiplication = 100
+num_trials = 10
+available_GPU = [0]
+
+========================================================
+0 hypercube(s) need(s) to be recalculated, to save time, try drastically increasing sigma_multiplication.
+Result  0 :  0.44973370512602884  with error:  7.989489673603847e-07
+================================================================
+kxi  | kxf  | kyi  | kyf  | qy   | integrand | err
+================================================================
+-0.785 |0.785 |-0.785 |0.785 | 0   | 4.49733705E-01 | 7.989E-07 
+================================================================
+Computed in  73.77492070198059  seconds.
+Process completed successfully!
+================================================================
+
