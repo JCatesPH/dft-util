@@ -26,6 +26,8 @@ from numba import cuda
 import scipy
 import scipy.special
 import ZMCIntegral
+import helpers
+
 
 # Define constants in function
 
@@ -33,16 +35,14 @@ mu = 0.1  # Fermi-level
 hOmg = 0.5  # Photon energy eV
 a = 4  # AA
 A = 4  # hbar^2/(2m)=4 evAA^2 (for free electron mass)
-rati = 0.3  # ratio
+rati = 0.01  # ratio
 eE0 = rati * ((hOmg) ** 2) / (2 * np.sqrt(A * mu))
 # print(eE0)
-Gamm = 0.005  # Gamma in eV.
-KT = 1 * 10 ** (-6)
+Gamm = 0.003  # Gamma in eV.
 shift = A * (eE0 / hOmg) ** 2
 
 
 # Function given with slight modification. I replaced all calls to kx, ky, qx, and qy with x[0], x[1], x[2], and x[3] respectively. This modification effectively "vectorizes" the input.
-
 sing = np.array([0.])
 
 @cuda.jit(device=True)
@@ -61,14 +61,25 @@ def my_Bessel(z):
     val = z**2 / 4 * (-1 + z**2 / 16 * (1 + z**2 / 36 * (-1 + z**2 / 64 * (1 + z**2 / 100 * (-1 + z**2 / 144 * (1 + z**2 / 196 * (-1 + z**2 / 256)))))))
     return val + 1
 
+# Initialize the variable qx as global
+qx = 0
+# print('qx = ', qx)
+# Helper function to set qx
+def setqx(qxi):
+	global qx
+	qx = qxi
+	return
 
+# Helper function to get qx
+@cuda.jit(device=True)
+def getqx():
+    return qx
 
 @cuda.jit(device=True)
 def modDs_real(x):
-    # MADE A BREAKTHROUGH ON ZMCINTEGRAL NOT CONVERGING!!
-    # NEED TO SET CONSTANT INPUT VARIABLES AND NOT PASS AS ARGUMENTS
     dds = 0
-    qx = 0.1
+    qx = getqx()
+
 
 
     ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
@@ -119,8 +130,10 @@ def modDs_real(x):
     heavi1 = mu - hOmg / 2
     heavi2 = mu + hOmg / 2
 
-    ferp = my_heaviside(heavi1)
-    ferm = my_heaviside(heavi2)
+
+    ferp = helpers.my_heaviside(heavi1)
+    ferm = helpers.my_heaviside(heavi2)
+
 
     taninv2k = 2 * math.atan2(Gamm, ek - mu)
     taninv2kq = 2 * math.atan2(Gamm, ekq - mu)
@@ -128,8 +141,8 @@ def modDs_real(x):
     lg2k = complex(0, 1) * math.log(Gamm ** 2 + (ek - mu) ** 2)
     lg2kq = complex(0, 1) * math.log(Gamm ** 2 + (ekq - mu) ** 2)
 
-    besk = my_Bessel(xk)
-    beskq = my_Bessel(xkq)
+    besk = helpers.my_Bessel(xk)
+    beskq = helpers.my_Bessel(xkq)
 
     fac1 = ek - ekq
 
@@ -173,9 +186,11 @@ def modDs_real(x):
 
     glga = bess2 * (omint2p - omint2m)
 
-    dds = dds + Gamm * (grgl + glga) / (4 * math.pi**3)
 
-    return - 16 * math.pi * dds.real
+    dds = dds + Gamm * (grgl + glga)
+
+    return - 4 * dds.real / math.pi**2
+
 
 
 # # Mahmoud:
@@ -188,6 +203,8 @@ def modDs_real(x):
 
 
 
+tic = time.time()
+
 
 # MC.available_GPU=[0]
 
@@ -199,50 +216,100 @@ print('num_trials = 10')
 print('available_GPU = [0]')
 print('\n========================================================')
 
-resultArray = np.empty(3)
-errArray = np.empty(3)
-i = 0
+start = time.time()
+
+# SET PARAMETERS AND LIMITS OF INTEGRATION
+kxi = - math.pi / a
+kxf = math.pi / a
+
+kyi = - math.pi / a
+kyf = math.pi / a
+
+setqx(0.01)
+
+MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
+
+# Setting the zmcintegral parameters
+MC.depth = 3
+MC.sigma_multiplication = 100
+MC.num_trials = 10
+
+result1 = MC.evaluate()
+print('Result for qx = ',qx, ': ', result1[0], ' with error: ', result1[1])
+print('================================================================')
+end = time.time()
+print('Computed in ', end-start, ' seconds.')
+print('================================================================')
+print('================================================================')
 
 
 start = time.time()
 
-for n in np.linspace(.01, .785, 1):
-	kxi = - math.pi / a
-	kxf = math.pi / a
+# SET PARAMETERS AND LIMITS OF INTEGRATION
+kxi = - math.pi / a
+kxf = math.pi / a
 
-	kyi = - math.pi / a
-	kyf = math.pi / a
+kyi = - math.pi / a
+kyf = math.pi / a
 
-	qy = 0
+setqx(0.05)
 
-	# Creating the ZMCintegral object for evaluation.
+MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
 
-	MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
-	# Setting the zmcintegral parameters
-	MC.depth = 3
-	MC.sigma_multiplication = 100
-	MC.num_trials = 10
+# Setting the zmcintegral parameters
+MC.depth = 3
+MC.sigma_multiplication = 100
+MC.num_trials = 10
 
-	result = MC.evaluate()
-	print('Result ', i, ': ', result[0], ' with error: ', result[1])
-	resultArray[i] = result[0]
-	errArray[i] = result[1]
-	i = i + 1
-
-
+result2 = MC.evaluate()
+print('Result for qx = ',qx, ': ', result2[0], ' with error: ', result2[1])
+print('================================================================')
 end = time.time()
-
-print('================================================================')
-print('kxi  | kxf  | kyi  | kyf  | qy   | integrand | err')
-print('================================================================')
-
-i = 0
-for n in np.linspace(.01, .785, 1):
-	print('%.3f |%.3f |%.3f |%.3f | 0   | %.8E | %.3E ' % (kxi,kyf, kyi, kyf, resultArray[i], errArray[i]))
-	i = i + 1
-
-print('================================================================')
 print('Computed in ', end-start, ' seconds.')
-print('Process completed successfully!')
+print('================================================================')
+print('================================================================')
+
+start = time.time()
+
+# SET PARAMETERS AND LIMITS OF INTEGRATION
+kxi = - math.pi / a
+kxf = math.pi / a
+
+kyi = - math.pi / a
+kyf = math.pi / a
+
+setqx(0.1)
+
+MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
+
+# Setting the zmcintegral parameters
+MC.depth = 3
+MC.sigma_multiplication = 100
+MC.num_trials = 10
+
+result3 = MC.evaluate()
+print('Result for qx = ',qx, ': ', result3[0], ' with error: ', result3[1])
+print('================================================================')
+end = time.time()
+print('Computed in ', end-start, ' seconds.')
+print('================================================================')
+print('================================================================')
+
+
+
+
+print('================================================================')
+print('kxi  | kxf  | kyi  | kyf  | qx  | qy   | integrand | err')
+print('================================================================')
+
+print('%.3f|%.3f|%.3f|%.3f| 0.01 | 0    |%11.8E| %.3E ' % (kxi,kyf, kyi, kyf,result1[0], result1[1]))
+print('%.3f|%.3f|%.3f|%.3f| 0.05 | 0    |%11.8E| %.3E ' % (kxi,kyf, kyi, kyf,result2[0], result2[1]))
+print('%.3f|%.3f|%.3f|%.3f| 0.1  | 0    |%11.8E| %.3E ' % (kxi,kyf, kyi, kyf,result3[0], result3[1]))
+
+print('================================================================')
+
+toc = time.time()
 print('================================================================\n')
+print('Process completed successfully!')
+print('Total time is ', toc-tic, 'seconds.')
 

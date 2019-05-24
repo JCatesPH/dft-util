@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./chi-03.py", line 196, in <module>
+    qx = getqx()
+TypeError: 'DeviceFunctionTemplate' object is not callable
+srun: error: gpu-0-0: task 0: Exited with exit code 1
