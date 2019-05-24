@@ -175,10 +175,12 @@ print('\ndepth = 3')
 print('sigma_multiplication = 100')
 print('num_trials = 10')
 print('available_GPU = [0]')
-print('kxi = - math.pi / a')
+print('\nkxi = - math.pi / a')
 print('kxf = math.pi / a')
-print('kyi = - math.pi / a')
+print('\nkyi = - math.pi / a')
 print('kyf = math.pi / a')
+print('\nqxi = 0.001')
+print('qxf = 6 * math.pi / a')
 print('\n========================================================')
 
 # qx = getqx()
@@ -197,7 +199,7 @@ helpers.setr(10)
 MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf]])
 # Setting the zmcintegral parameters
 MC.depth = 3
-MC.sigma_multiplication = 100
+MC.sigma_multiplication = 1000
 MC.num_trials = 10
 start = time.time()
 result = MC.evaluate()
