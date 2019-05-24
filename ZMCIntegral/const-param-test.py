@@ -13,9 +13,11 @@ qx = 0
 print('qx = ', qx)
 
 # Helper function to set qx
-@cuda.jit(device=True)
+# @cuda.jit(device=True)
 def setqx(qxi):
+	global qx
 	qx = qxi
+	return
 
 # Helper function to get qx
 @cuda.jit(device=True)
