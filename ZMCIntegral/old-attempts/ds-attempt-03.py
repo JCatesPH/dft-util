@@ -1,4 +1,4 @@
-#!/home/jmcates/miniconda3/envs/zmcint/bin/python
+#!/home/jalenc/.conda/envs/ZMCIntegral/bin/python
 # coding: utf-8
 
 # # # Attempt to evaluate the integral of the function given by Dr. Tse using ZMCintegral
@@ -9,6 +9,9 @@
 #
 # Dr. Tse:
 # "Hi Jalen, what we need is a plot of the integrated result as a function of qx. My postdoc Mahmoud has a plot for that he obtained previously from another integration method that we can compare your MC results with. "
+
+# In[1]:
+
 
 #!/home/jmcates/miniconda3/envs/zmcint/bin/python
 # coding: utf-8
@@ -27,6 +30,9 @@ import ZMCIntegral
 
 # Define constants in function
 
+# In[2]:
+
+
 mu = 0.1  # Fermi-level
 hOmg = 0.5  # Photon energy eV
 a = 4  # AA
@@ -40,6 +46,8 @@ shift = A * (eE0 / hOmg) ** 2
 
 
 # Function given with slight modification. I replaced all calls to kx, ky, qx, and qy with x[0], x[1], x[2], and x[3] respectively. This modification effectively "vectorizes" the input.
+
+# In[46]:
 
 sing = np.array([0.])
 
@@ -280,8 +288,23 @@ def modDs_real(x):
 #
 # "For qx and qy it is more efficient to use qx=[0.001,pi/a] and qy=0, because of the symmetry of the problem. kx and ky should be as we said before kx=[-pi/a,pi/a],ky=[-pi/a,pi/a]."
 
+# In[47]:
+
+
+'''
+# Ensure that cuda is used
+@cuda.jit(device=True)
+ # Makes the function below no longer callable, so a test evaluation can not be done with this.
+def Ds_real(y):
+	val = Ds(y[0],y[1],y[2],y[3])
+	return val.real / (8*math.pi**3)
+'''
+
 
 # Introducing suggested values of integration.
+
+# In[48]:
+
 
 kxi = - math.pi / a
 kxf = math.pi / a
@@ -296,6 +319,8 @@ qyi = 0
 qyf = 0
 
 
+# In[49]:
+
 print('\n========================================================')
 print('\nThe limits of integration:')
 print('  kx = (', kxi, ', ', kxf, ')')
@@ -305,13 +330,19 @@ print('  qy = (', qyi, ', ', qyf, ')')
 
 # Creating the ZMCintegral object for evaluation.
 
+# In[50]:
+
+
 MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
 
 # Setting the zmcintegral parameters
-MC.depth = 3
-MC.sigma_multiplication = 100000000
-MC.num_trials = 10
+MC.depth = 1
+MC.sigma_multiplication = 4
+MC.num_trials = 2
 MC.available_GPU=[0]
+
+
+# In[51]:
 
 
 print('\n========================================================')
@@ -324,22 +355,15 @@ print('\n========================================================')
 
 # # Evaluating integral:
 
+# In[52]:
+
 start = time.time()
 result = MC.evaluate()
 end = time.time()
 
-print('\n========================================================')
-print('\nThe limits of integration:')
-print('  kx = (', kxi, ', ', kxf, ')')
-print('  ky = (', kyi, ', ', kyf, ')')
-print('  qx = (', qxi, ', ', qxf, ')')
-print('  qy = (', qyi, ', ', qyf, ')')
-print('\n========================================================')
-print('\ndepth = ', MC.depth)
-print('sigma_multiplication = ', MC.sigma_multiplication)
-print('num_trials = ', MC.num_trials)
-print('available_GPU = ', MC.available_GPU)
-print('\n========================================================')
+# In[38]:
+
+
 print('\n========================================================')
 print('Integration is complete!')
 print('\n========================================================')
@@ -349,3 +373,16 @@ print('Computed in ', end-start, ' seconds.')
 print('\n========================================================')
 
 
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
