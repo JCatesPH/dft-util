@@ -1,5 +1,0 @@
-  File "./matrices-attempt-02.py", line 161
-    def Ds_gpu(x)
-    ^
-IndentationError: unexpected indent
-srun: error: gpu-0-0: task 0: Exited with exit code 1

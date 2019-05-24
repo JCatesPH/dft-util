@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "./chi-02.py", line 29, in <module>
-    import helpers
-  File "/home/jmcates/ZMCIntWS/my-phys-util/ZMCIntegral/helpers.py", line 8, in <module>
-    @cuda.jit(device=True)
-NameError: name 'cuda' is not defined
-srun: error: gpu-0-0: task 0: Exited with exit code 1

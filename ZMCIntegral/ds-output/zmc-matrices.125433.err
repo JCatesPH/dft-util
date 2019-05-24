@@ -1,5 +1,0 @@
-  File "./ds-attempt-03.py", line 60
-    else:
-        ^
-IndentationError: unindent does not match any outer indentation level
-srun: error: gpu-0-0: task 0: Exited with exit code 1

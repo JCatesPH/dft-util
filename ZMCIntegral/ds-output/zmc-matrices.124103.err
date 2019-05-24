@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "./matrices-attempt-01.py", line 192, in <module>
-    MC = ZMCintegral.MCintegral(Ds,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
-AttributeError: module 'ZMCintegral' has no attribute 'MCintegral'
-srun: error: gpu-0-0: task 0: Exited with exit code 1

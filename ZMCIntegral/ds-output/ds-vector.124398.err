@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "./check-vectorized.py", line 156, in <module>
-    testeval = Ds(0.1, 0.1, 0.01, 0)
-TypeError: Ds() takes 1 positional argument but 4 were given
-srun: error: gpu-0-0: task 0: Exited with exit code 1

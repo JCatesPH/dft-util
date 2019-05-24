@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "./ds-integrands-03.py", line 24, in <module>
-    import numpy as np
-ModuleNotFoundError: No module named 'numpy'
-srun: error: gpu-0-0: task 0: Exited with exit code 1
