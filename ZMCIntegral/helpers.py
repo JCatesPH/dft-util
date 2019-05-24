@@ -14,8 +14,16 @@ def setqx(qxi):
 def getqx():
     return qx
 
+# Helper function to set qx
+def setr(ri):
+	global r
+	r = ri
+	return
 
-sing = np.array([0.])
+# Helper function to get qx
+@cuda.jit(device=True)
+def getr():
+    return r
 
 @cuda.jit(device=True)
 def my_heaviside(z):

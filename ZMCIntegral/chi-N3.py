@@ -12,7 +12,7 @@ import ZMCIntegral
 import time
 import numpy as np
 import helpers
-
+from numba.extending import overload
 # # Define constants in function
 
 mu = 0.1  # Fermi-level
@@ -52,20 +52,20 @@ def my_Besselv(v, z):
         
     return result * resultsign
     
-@cuda.jit(device=True)    
+# @cuda.jit(device=True)    
 def Dslist1(ek, ekq, N):
-    taninv1kp = [complex]
-    taninv1kqp = [complex]
-    taninv1km = [complex]
-    taninv1kqm = [complex]
+    taninv1kp = [complex(1,1)]
+    taninv1kqp = [complex(1,1)]
+    taninv1km = [complex(1,1)]
+    taninv1kqm = [complex(1,1)]
 
-    lg1kp = [complex]
-    lg1kqp = [complex]
-    lg1km = [complex]
-    lg1kqm = [complex]
+    lg1kp = [complex(1,1)]
+    lg1kqp = [complex(1,1)]
+    lg1km = [complex(1,1)]
+    lg1kqm = [complex(1,1)]
             
-    ferp = [complex]
-    ferm = [complex]
+    ferp = [complex(1,1)]
+    ferm = [complex(1,1)]
     i = -(N - 1) / 2
     while(i < ((N - 1) / 2 + 1)):
         taninv1kp.append(2 * math.atan2(Gamm, ek - hOmg / 2 + hOmg * i))
@@ -82,28 +82,40 @@ def Dslist1(ek, ekq, N):
         ferm.append(helpers.my_heaviside(mu + hOmg / 2 - hOmg * i))
         i = i + 1
     
+    taninv1kp.remove(taninv1kp[0])
+    taninv1kqp.remove(taninv1kqp[0])
+    taninv1km.remove(taninv1km[0])
+    taninv1kqm.remove(taninv1kqm[0])
+
+    lg1kp.remove(lg1kp[0])
+    lg1kqp.remove(lg1kqp[0])
+    lg1km.remove(lg1km[0])
+    lg1kqm.remove(lg1kqm[0])
+            
+    ferp.remove(ferp[0])
+    ferm.remove(ferm[0])
+
     firstList = [taninv1kp, taninv1kqp, taninv1km, taninv1kqm, lg1kp, lg1kqp, lg1km, lg1kqm, ferp, ferm]
     return firstList
 
 
 
-
-@cuda.jit(device=True)        
+# @cuda.jit(device=True)        
 def Dslist2(ek, ekq, xk, xkq, N):
     # size_dbl = 2 * N - 1
 
-    taninv2k = [complex]
-    taninv2kq = [complex]
+    taninv2k = [complex(1,1)]
+    taninv2kq = [complex(1,1)]
 
-    lg2k = [complex]
-    lg2kq = [complex]
+    lg2k = [complex(1,1)]
+    lg2kq = [complex(1,1)]
 
-    besk = [complex]
-    beskq = [complex]
+    besk = [complex(1,1)]
+    beskq = [complex(1,1)]
 
-    fac1 = [complex]
-    fac2 = [complex]
-    fac3 = [complex]
+    fac1 = [complex(1,1)]
+    fac2 = [complex(1,1)]
+    fac3 = [complex(1,1)]
 
     for i in range(-(N - 1), N, 1):
         xi = hOmg * i
@@ -135,6 +147,19 @@ def Dslist2(ek, ekq, xk, xkq, N):
         fac1.append(fac1i)
         fac2.append(fac2i)
         fac3.append(fac3i)
+
+    taninv2k.remove(taninv2k[0])
+    taninv2kq.remove(taninv2kq[0])
+
+    lg2k.remove(lg2k[0])
+    lg2kq.remove(lg2kq[0])
+
+    besk.remove(besk[0])
+    beskq.remove(beskq[0])
+
+    fac1.remove(fac1[0])
+    fac2.remove(fac2[0])
+    fac3.remove(fac3[0])
 
     secondList = [taninv2k, taninv2kq, lg2k, lg2kq, besk, beskq, fac1, fac2, fac3]
     return secondList
