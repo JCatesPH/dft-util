@@ -58,9 +58,10 @@ def getqx():
 @cuda.jit(device=True)
 def modDs_real(x):
     dds = 0
+    # Change this global to r
     qx = getqx()
 
-
+    # qx -> x[2]
     ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     ekq = A * (math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
@@ -162,7 +163,7 @@ def modDs_real(x):
     bess2 = beskq * beskq * beskq * beskq * besk * besk
 
     glga = bess2 * (omint2p - omint2m)
-
+    # (grgl + glga) * J_0(qx*r) * qx 
     dds = dds + Gamm * (grgl + glga)
 
     return - 4 * dds.real / math.pi**2
@@ -201,6 +202,8 @@ kxf = math.pi / a
 
 kyi = - math.pi / a
 kyf = math.pi / a
+
+# qx = [0.001,6pi/a]
 
 resultArr = np.zeros(100)
 errorArr = np.zeros(100)
