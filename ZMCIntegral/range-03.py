@@ -105,8 +105,8 @@ def modDs_real(x):
     lg2k = complex(0, 1) * math.log(Gamm ** 2 + (ek - mu) ** 2)
     lg2kq = complex(0, 1) * math.log(Gamm ** 2 + (ekq - mu) ** 2)
 
-    besk = cudabesselj.besselj(xk)
-    beskq = cudabesselj.besselj(xkq)
+    besk = cudabesselj.besselj(0, xk)
+    beskq = cudabesselj.besselj(0, xkq)
 
     fac1 = ek - ekq
 
@@ -150,7 +150,7 @@ def modDs_real(x):
 
     glga = bess2 * (omint2p - omint2m)
 
-    bess0 = cudabesselj.besselj(x[2]*r)
+    bess0 = cudabesselj.besselj(0, x[2]*r)
 
     dds = dds + Gamm * (grgl + glga) * x[2] * bess0
 
