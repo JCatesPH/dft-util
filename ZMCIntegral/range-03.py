@@ -204,7 +204,7 @@ j = 0
 for i in range(10, 100, 1):
 
     helpers.setr(i)
-    MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf])
+    MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf]])
     # Setting the zmcintegral parameters
     MC.depth = 3
     MC.sigma_multiplication = 10000
