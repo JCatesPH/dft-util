@@ -1,0 +1,395 @@
+QtiPlot 0.9.8 project file
+<scripting-lang>	muParser
+<windows>	4
+<table>
+Table2	90	4	5/30/19 11:51 AM
+geometry	1	3	514	952	
+header	r[X]	Integral[Y]	Error[yEr]	Time[Y]
+ColWidth	100	100	100	100	
+<com>
+</com>
+ColType	0;0/13	0;2/3	0;0/13	0;0/13
+ReadOnlyColumn	0	0	0	0
+HiddenColumn	0	0	0	0
+Comments	r	 Integral	 Error	 Time	
+WindowLabel	/home/jmcates/github/my-phys-util/ZMCIntegral/range3-0530.csv	2
+<data>
+0	10	0.0002003	1.731e-07	330.4
+1	11	-0.0001839	1.841e-07	329.6
+2	12	-0.0004768	1.906e-07	330.4
+3	13	-0.0006506	1.876e-07	330.6
+4	14	-0.000704	1.823e-07	330.9
+5	15	-0.0006659	1.752e-07	330.9
+6	16	-0.0005625	1.658e-07	331.1
+7	17	-0.000416	1.595e-07	331.4
+8	18	-0.0002587	1.461e-07	331.6
+9	19	-0.0001207	1.426e-07	331.8
+10	20	-7.712e-06	1.439e-07	331.8
+11	21	8.822e-05	1.462e-07	332.3
+12	22	0.0001652	1.526e-07	332.2
+13	23	0.0002123	1.537e-07	332.2
+14	24	0.0002285	1.52e-07	332.8
+15	25	0.0002219	1.537e-07	332.5
+16	26	0.0001962	1.439e-07	332.8
+17	27	0.0001524	1.412e-07	332.5
+18	28	9.881e-05	1.384e-07	333.1
+19	29	4.746e-05	1.351e-07	332.9
+20	30	1.642e-06	1.365e-07	332.9
+21	31	-4.117e-05	1.378e-07	332.8
+22	32	-7.854e-05	1.431e-07	332.9
+23	33	-0.0001027	1.393e-07	333.2
+24	34	-0.0001123	1.4e-07	333.3
+25	35	-0.0001108	1.435e-07	333.2
+26	36	-9.937e-05	1.44e-07	333.4
+27	37	-7.732e-05	1.363e-07	333.3
+28	38	-4.895e-05	1.344e-07	333.3
+29	39	-2.135e-05	1.319e-07	333.5
+30	40	3.14e-06	1.356e-07	333.4
+31	41	2.624e-05	1.342e-07	333.3
+32	42	4.62e-05	1.354e-07	334.2
+33	43	5.885e-05	1.369e-07	333.8
+34	44	6.331e-05	1.404e-07	333.7
+35	45	6.244e-05	1.375e-07	334
+36	46	5.647e-05	1.359e-07	333.7
+37	47	4.439e-05	1.347e-07	333.7
+38	48	2.814e-05	1.353e-07	333.8
+39	49	1.209e-05	1.334e-07	333.7
+40	50	-2.521e-06	1.311e-07	333.7
+41	51	-1.694e-05	1.275e-07	334
+42	52	-2.977e-05	1.283e-07	333.7
+43	53	-3.805e-05	1.309e-07	333.7
+44	54	-4.092e-05	1.375e-07	333.8
+45	55	-4.045e-05	1.384e-07	333.6
+46	56	-3.672e-05	1.412e-07	334.3
+47	57	-2.869e-05	1.389e-07	334.3
+48	58	-1.765e-05	1.376e-07	334.2
+49	59	-6.877e-06	1.284e-07	334
+50	60	2.754e-06	1.186e-07	334.1
+51	61	1.211e-05	1.119e-07	334
+52	62	2.067e-05	1.072e-07	334
+53	63	2.592e-05	1.096e-07	334
+54	64	2.749e-05	1.182e-07	334
+55	65	2.692e-05	1.358e-07	334
+56	66	2.457e-05	1.489e-07	334.1
+57	67	1.912e-05	1.546e-07	334
+58	68	1.16e-05	1.567e-07	333.9
+59	69	4.301e-06	1.556e-07	334.1
+60	70	-2.289e-06	1.476e-07	334
+61	71	-8.942e-06	1.415e-07	334
+62	72	-1.515e-05	1.36e-07	334
+63	73	-1.882e-05	1.331e-07	334
+64	74	-1.993e-05	1.314e-07	334.1
+65	75	-1.96e-05	1.378e-07	334
+66	76	-1.786e-05	1.336e-07	334
+67	77	-1.38e-05	1.351e-07	334
+68	78	-8.163e-06	1.363e-07	334.2
+69	79	-2.772e-06	1.388e-07	334
+70	80	2.078e-06	1.366e-07	334
+71	81	6.843e-06	1.353e-07	334
+72	82	1.129e-05	1.315e-07	334
+73	83	1.391e-05	1.345e-07	334.6
+74	84	1.46e-05	1.32e-07	334.6
+75	85	1.424e-05	1.343e-07	334.6
+76	86	1.285e-05	1.324e-07	334.5
+77	87	9.97e-06	1.317e-07	334.5
+78	88	5.776e-06	1.333e-07	334.6
+79	89	1.659e-06	1.326e-07	334.3
+80	90	-1.856e-06	1.321e-07	334.4
+81	91	-5.5e-06	1.332e-07	334.4
+82	92	-8.883e-06	1.323e-07	334.3
+83	93	-1.085e-05	1.287e-07	334.4
+84	94	-1.134e-05	1.298e-07	334.5
+85	95	-1.1e-05	1.315e-07	334.4
+86	96	-1.003e-05	1.311e-07	334.3
+87	97	-7.669e-06	1.295e-07	334.3
+88	98	-4.315e-06	1.323e-07	334.4
+89	99	-1.154e-06	1.293e-07	334.3
+</data>
+</table>
+<multiLayer>
+Graph2	1	1	5/30/19 12:06 PM
+geometry	514	466	535	469	
+WindowLabel		2
+Margins	5	5	5	5
+Spacing	5	5
+LayerCanvasSize	400	300
+Alignement	0	0
+<AlignPolicy>0</AlignPolicy>
+<CommonAxes>0</CommonAxes>
+<graph>
+ggeometry	5	5	517	406
+<PageGeometry>0.00948767	0.0118765	0.981025	0.964371</PageGeometry>
+PlotTitle	Time vs. r	#000000	4228
+<Antialiasing>0</Antialiasing>
+<Autoscaling>1</Autoscaling>
+<ScaleFonts>1</ScaleFonts>
+<GridOnTop>0</GridOnTop>
+<MissingDataGap>1</MissingDataGap>
+Background	#ffffff	0
+Margin	0
+Border	0	#000000
+grid	0	0	0	0	#0000ff	0	0.5	#a0a0a4	2	0.4	#0000ff	0	0.5	#a0a0a4	2	0.4	0	0	2	0	0
+EnabledAxes	1	0	1	0	
+AxesTitles	r	Time		%(?Y)	
+AxesTitleColors	#000000	#000000	#000000	#000000	
+AxesTitleAlignment	5124	4	5124	4
+AxesTitleDistance	2	-1	2	-1
+InvertedTitle	0	0	0	0
+TitleFont	Ubuntu	13	75	0	0	0
+ScaleFont0	Ubuntu	11	75	0	0	0
+ScaleFont1	Ubuntu	11	75	0	0	0
+ScaleFont2	Ubuntu	11	75	0	0	0
+ScaleFont3	Ubuntu	11	75	0	0	0
+AxisFont0	Ubuntu	11	50	0	0	0
+AxisFont1	Ubuntu	11	50	0	0	0
+AxisFont2	Ubuntu	11	50	0	0	0
+AxisFont3	Ubuntu	11	50	0	0	0
+AxesColors	#000000	#000000	#000000	#000000
+AxesNumberColors	#3c3c3c	#3c3c3c	#3c3c3c	#3c3c3c
+AxesBaseline	0	0	0	0	
+CanvasBackground	#ffffff	0
+curve	Table2_r	Table2_Time	1	0	#000000	0	1	7	1	#000000	#000000	0	#000000	14	1	2	0	0	89	1
+scale	0	329	335	0	7	5	0	0
+scale	1	329	335	0	7	5	0	0
+scale	2	0	100	0	6	5	0	0
+scale	3	0	100	0	6	5	0	0
+LabelsFormat	0	6	0	6	0	6	0	6
+AxisType	0	0	0	0	
+MajorTicks	1	1	1	1
+MinorTicks	1	1	1	1
+TicksLength	5	9
+DrawAxesBackbone	1	1	1	1	1
+AxesLineWidth	1
+LabelsRotation	0	0	0	0
+LabelsPrefix				
+LabelsSuffix				
+TickLabelsSpace	4	4	4	4
+ShowTicksPolicy	0	0	0	0
+EnabledTickLabels	1	1	1	1
+<Legend>
+<Frame>1</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>33.082706766917</x>
+<y>330.32441471572</y>
+<right>85.9649122807018</right>
+<bottom>329.76254180602</bottom>
+<attachTo>1</attachTo>
+<onTop>1</onTop>
+<visible>1</visible>
+<Text>
+Total time is  30015 seconds.
+</Text>
+<Font>Ubuntu	11	50	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>0</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+</graph>
+<LinkXAxes>0</LinkXAxes>
+<ScaleLayers>1</ScaleLayers>
+</multiLayer>
+<multiLayer>
+Graph3	1	1	5/30/19 12:09 PM
+geometry	514	0	593	469	
+WindowLabel		2
+Margins	5	5	5	5
+Spacing	5	5
+LayerCanvasSize	400	300
+Alignement	0	0
+<AlignPolicy>0</AlignPolicy>
+<CommonAxes>0</CommonAxes>
+<graph>
+ggeometry	5	5	575	406
+<PageGeometry>0.00854701	0.0118765	0.982906	0.964371</PageGeometry>
+PlotTitle		#000000	4228
+<Antialiasing>0</Antialiasing>
+<Autoscaling>1</Autoscaling>
+<ScaleFonts>1</ScaleFonts>
+<GridOnTop>0</GridOnTop>
+<MissingDataGap>1</MissingDataGap>
+Background	#ffffff	0
+Margin	0
+Border	0	#000000
+grid	0	0	0	0	#0000ff	0	0.5	#a0a0a4	2	0.4	#0000ff	0	0.5	#a0a0a4	2	0.4	0	1	2	0	0
+EnabledAxes	1	0	1	0	
+AxesTitles	r	Range Function		%(?Y)	
+AxesTitleColors	#000000	#000000	#000000	#000000	
+AxesTitleAlignment	5124	4	5124	4
+AxesTitleDistance	2	-1	2	-1
+InvertedTitle	0	0	0	0
+TitleFont	Ubuntu	13	75	0	0	0
+ScaleFont0	Ubuntu	11	75	0	0	0
+ScaleFont1	Ubuntu	11	75	0	0	0
+ScaleFont2	Ubuntu	11	75	0	0	0
+ScaleFont3	Ubuntu	11	75	0	0	0
+AxisFont0	Ubuntu	11	50	0	0	0
+AxisFont1	Ubuntu	11	50	0	0	0
+AxisFont2	Ubuntu	11	50	0	0	0
+AxisFont3	Ubuntu	11	50	0	0	0
+AxesColors	#000000	#000000	#000000	#000000
+AxesNumberColors	#3c3c3c	#3c3c3c	#3c3c3c	#3c3c3c
+AxesBaseline	0	0	0	0	
+CanvasBackground	#ffffff	0
+curve	Table2_r	Table2_Integral	1	0	#000000	0	1	7	1	#000000	#000000	0	#000000	14	1	2	0	0	89	1
+ErrorBars	1	Table2_r	Table2_Integral	Table2_Error	1	8	#000000	1	1	1	0
+scale	0	-0.0008	0.0004	0	7	5	0	0
+scale	1	-0.0008	0.0004	0	7	5	0	0
+scale	2	0	100	0	6	5	0	0
+scale	3	0	100	0	6	5	0	0
+LabelsFormat	2	0	0	6	0	6	0	6
+AxisType	0	0	0	0	
+MajorTicks	1	1	1	1
+MinorTicks	1	1	1	1
+TicksLength	5	9
+DrawAxesBackbone	1	1	1	1	1
+AxesLineWidth	1
+LabelsRotation	0	0	0	0
+LabelsPrefix				
+LabelsSuffix				
+TickLabelsSpace	4	4	4	4
+ShowTicksPolicy	0	0	0	0
+EnabledTickLabels	1	1	1	1
+<Legend>
+<Frame>0</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>23.206751054852</x>
+<y>0.00044495677233429</y>
+<right>66.2447257383966</right>
+<bottom>0.000327377521613833</bottom>
+<attachTo>1</attachTo>
+<onTop>1</onTop>
+<visible>1</visible>
+<Text>
+Range Function vs. r
+</Text>
+<Font>Ubuntu	15	75	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>0</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+</graph>
+<LinkXAxes>0</LinkXAxes>
+<ScaleLayers>1</ScaleLayers>
+</multiLayer>
+<multiLayer>
+Graph4	1	1	5/30/19 12:15 PM
+geometry	1107	0	593	469	active
+WindowLabel		2
+Margins	5	5	5	5
+Spacing	5	5
+LayerCanvasSize	400	300
+Alignement	0	0
+<AlignPolicy>0</AlignPolicy>
+<CommonAxes>0</CommonAxes>
+<graph>
+ggeometry	5	5	575	406
+<PageGeometry>0.00854701	0.0118765	0.982906	0.964371</PageGeometry>
+PlotTitle		#000000	4228
+<Antialiasing>0</Antialiasing>
+<Autoscaling>1</Autoscaling>
+<ScaleFonts>1</ScaleFonts>
+<GridOnTop>0</GridOnTop>
+<MissingDataGap>1</MissingDataGap>
+Background	#ffffff	0
+Margin	0
+Border	0	#000000
+grid	0	0	0	0	#0000ff	0	0.5	#a0a0a4	2	0.4	#0000ff	0	0.5	#a0a0a4	2	0.4	0	1	2	0	0
+EnabledAxes	1	0	1	0	
+AxesTitles	r	Range Function		%(?Y)	
+AxesTitleColors	#000000	#000000	#000000	#000000	
+AxesTitleAlignment	5124	4	5124	4
+AxesTitleDistance	2	-1	2	-1
+InvertedTitle	0	0	0	0
+TitleFont	Ubuntu	13	75	0	0	0
+ScaleFont0	Ubuntu	11	75	0	0	0
+ScaleFont1	Ubuntu	12	75	0	0	0
+ScaleFont2	Ubuntu	11	75	0	0	0
+ScaleFont3	Ubuntu	12	75	0	0	0
+AxisFont0	Ubuntu	11	50	0	0	0
+AxisFont1	Ubuntu	10	50	0	0	0
+AxisFont2	Ubuntu	11	50	0	0	0
+AxisFont3	Ubuntu	10	50	0	0	0
+AxesColors	#000000	#000000	#000000	#000000
+AxesNumberColors	#3c3c3c	#3c3c3c	#3c3c3c	#3c3c3c
+AxesBaseline	0	0	0	0	
+CanvasBackground	#ffffff	0
+curve	Table2_r	Table2_Integral	1	0	#000000	0	1	7	1	#000000	#000000	0	#000000	14	1	2	0	29	89	1
+ErrorBars	1	Table2_r	Table2_Integral	Table2_Error	1	8	#000000	1	1	1	0
+scale	0	-6e-05	8e-05	0	8	5	0	0
+scale	1	-6e-05	8e-05	0	8	5	0	0
+scale	2	20	100	0	5	5	0	0
+scale	3	20	100	0	5	5	0	0
+LabelsFormat	0	6	0	6	0	6	0	6
+AxisType	0	0	0	0	
+MajorTicks	1	1	1	1
+MinorTicks	1	1	1	1
+TicksLength	5	9
+DrawAxesBackbone	1	1	1	1	1
+AxesLineWidth	1
+LabelsRotation	0	0	0	0
+LabelsPrefix				
+LabelsSuffix				
+TickLabelsSpace	4	4	4	4
+ShowTicksPolicy	0	0	0	0
+EnabledTickLabels	1	1	1	1
+<Legend>
+<Frame>0</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>23.206751054852</x>
+<y>0.00044495677233429</y>
+<right>22.9957805907173</right>
+<bottom>0.000265129682997118</bottom>
+<attachTo>1</attachTo>
+<onTop>1</onTop>
+<visible>1</visible>
+<Text>
+Range Function vs. r
+</Text>
+<Font>Ubuntu	15	75	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>0</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+<Legend>
+<Frame>0</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>35.53235908142</x>
+<y>8.6051873198847e-05</y>
+<right>80.125260960334</right>
+<bottom>7.15273775216138e-05</bottom>
+<attachTo>1</attachTo>
+<onTop>1</onTop>
+<visible>1</visible>
+<Text>
+Range Function vs. r Tail
+</Text>
+<Font>Ubuntu	15	75	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>0</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+</graph>
+<LinkXAxes>0</LinkXAxes>
+<ScaleLayers>1</ScaleLayers>
+</multiLayer>
+<open>1</open>
