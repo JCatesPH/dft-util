@@ -15,7 +15,10 @@ from numba import cuda
 
 # Importing is done, and the general function is below.
 
-# In[2]:
+
+# Importing is done, and the general function is below.
+
+
 
 @cuda.jit(device=True)
 def besselj(n, x):
@@ -37,13 +40,13 @@ def besselj(n, x):
     if(x > n):
         bjm = bessj0(x)
         bj = bessj1(x)
-        for i in range(1,n-1):
+        for i in range(1,n):
             bjp = i * tox * bj - bjm
             bjm = bj
             bj = bjp
         bessj = bj
     else:
-        m = n + int(math.sqrt(float(IACC * n)))
+        m = int(2*(n + int(math.sqrt(float(IACC * n)))/2))
         
         bessj = 0
         jsum = 0
@@ -51,7 +54,7 @@ def besselj(n, x):
         bjp = 0
         bj = 1
         
-        for i in range(m, 1, -1):
+        for i in range(m, 0, -1):
             bjm = i * tox * bj - bjp
             bjp = bj
             bj = bjm
@@ -76,7 +79,6 @@ def besselj(n, x):
     return bessj
 
 
-# In[3]:
 
 @cuda.jit(device=True)
 def bessj0(x):
@@ -138,9 +140,4 @@ def bessj1(x):
         bessj1 = math.sqrt(P[5] / ax) * (math.cos(xx) * FP - z * math.sin(xx) * FQ) * abs(S[5]) * (x / ax)
         
     return bessj1
-
-
-
-
-
 
