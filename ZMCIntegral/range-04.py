@@ -181,7 +181,7 @@ print('kxf = math.pi / a')
 print('\nkyi = - math.pi / a')
 print('kyf = math.pi / a')
 print('\nqxi = 0.001')
-print('qxf = 10 * math.pi / a')
+print('qxf = 12 * math.pi / a')
 print('\n========================================================')
 
 # qx = getqx()
@@ -194,7 +194,7 @@ kyi = - math.pi / a
 kyf = math.pi / a
 
 qxi = 0.001
-qxf = 10 * math.pi / a
+qxf = 12 * math.pi / a
 
 
 resultArr = np.zeros(100)
