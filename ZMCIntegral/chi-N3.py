@@ -52,20 +52,20 @@ def my_Besselv(v, z):
         
     return result * resultsign
     
-# @cuda.jit(device=True)    
+@cuda.jit(device=True)    
 def Dslist1(ek, ekq, N):
-    taninv1kp = [complex(1,1)]
-    taninv1kqp = [complex(1,1)]
-    taninv1km = [complex(1,1)]
-    taninv1kqm = [complex(1,1)]
+    taninv1kp = (complex(1,1))
+    taninv1kqp = (complex(1,1))
+    taninv1km = (complex(1,1))
+    taninv1kqm = (complex(1,1))
 
-    lg1kp = [complex(1,1)]
-    lg1kqp = [complex(1,1)]
-    lg1km = [complex(1,1)]
-    lg1kqm = [complex(1,1)]
+    lg1kp = (complex(1,1))
+    lg1kqp = (complex(1,1))
+    lg1km = (complex(1,1))
+    lg1kqm = (complex(1,1))
             
-    ferp = [complex(1,1)]
-    ferm = [complex(1,1)]
+    ferp = (complex(1,1))
+    ferm = (complex(1,1))
     i = -(N - 1) / 2
     while(i < ((N - 1) / 2 + 1)):
         taninv1kp.append(2 * math.atan2(Gamm, ek - hOmg / 2 + hOmg * i))
@@ -95,27 +95,27 @@ def Dslist1(ek, ekq, N):
     ferp.remove(ferp[0])
     ferm.remove(ferm[0])
 
-    firstList = [taninv1kp, taninv1kqp, taninv1km, taninv1kqm, lg1kp, lg1kqp, lg1km, lg1kqm, ferp, ferm]
+    firstList = (taninv1kp, taninv1kqp, taninv1km, taninv1kqm, lg1kp, lg1kqp, lg1km, lg1kqm, ferp, ferm)
     return firstList
 
 
 
-# @cuda.jit(device=True)        
+@cuda.jit(device=True)        
 def Dslist2(ek, ekq, xk, xkq, N):
     # size_dbl = 2 * N - 1
 
-    taninv2k = [complex(1,1)]
-    taninv2kq = [complex(1,1)]
+    taninv2k = (complex(1,1))
+    taninv2kq = (complex(1,1))
 
-    lg2k = [complex(1,1)]
-    lg2kq = [complex(1,1)]
+    lg2k = (complex(1,1))
+    lg2kq = (complex(1,1))
 
-    besk = [complex(1,1)]
-    beskq = [complex(1,1)]
+    besk = (complex(1,1))
+    beskq = (complex(1,1))
 
-    fac1 = [complex(1,1)]
-    fac2 = [complex(1,1)]
-    fac3 = [complex(1,1)]
+    fac1 = (complex(1,1))
+    fac2 = (complex(1,1))
+    fac3 = (complex(1,1))
 
     for i in range(-(N - 1), N, 1):
         xi = hOmg * i
@@ -161,12 +161,12 @@ def Dslist2(ek, ekq, xk, xkq, N):
     fac2.remove(fac2[0])
     fac3.remove(fac3[0])
 
-    secondList = [taninv2k, taninv2kq, lg2k, lg2kq, besk, beskq, fac1, fac2, fac3]
+    secondList = (taninv2k, taninv2kq, lg2k, lg2kq, besk, beskq, fac1, fac2, fac3)
     return secondList
 
 
 
-@cuda.jit(device=True)        
+# @cuda.jit('float64(float64[:])',device=True)        
 def modDsN2(x):
     N = 3
     dds = 0

@@ -64,7 +64,7 @@ def modDsN2(x):
     xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
     xkq = 2 * A * eE0 * math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2) / hOmg ** 2
 
-    taninv1kp = numba.types.ArrayCTypes(np.array(N,'float64'))
+    taninv1kp = cuda.shared.array(shape=N,dtype='float64')
     taninv1kqp = numba.types.Array('float64', N, A)
     taninv1km = numba.types.Array('float64', N, A)
     taninv1kqm = numba.types.Array('float64', N, A)
