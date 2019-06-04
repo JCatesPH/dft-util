@@ -27,6 +27,7 @@ Gamm = 0.003  # Gamma in eV.
 KT = 1 * 10 ** (-6)
 shift = A * (eE0 / hOmg) ** 2
 
+Gammsq = Gamm ** 2
 
 @numba.cuda.jit(device=True)        
 def modDsN2(x):
@@ -62,15 +63,20 @@ def modDsN2(x):
         iota = ek + chi + nu
         kappa = ekq + chi + nu
 
+        omisq = omicron ** 2
+        phisq = phi ** 2
+        iotasq = iota ** 2
+        kappasq = kappa ** 2
+
         taninv1kp[n] = 2 * math.atan2(Gamm, omicron)
         taninv1kqp[n] = 2 * math.atan2(Gamm, phi)
         taninv1km[n] = 2 * math.atan2(Gamm, iota)
         taninv1kqm[n] = 2 * math.atan2(Gamm, kappa)
 
-        lg1kp[n] = complex(0, 1) * math.log(Gamm ** 2 + (omicron) ** 2)
-        lg1kqp[n] = complex(0, 1) * math.log(Gamm ** 2 + (phi) ** 2)
-        lg1km[n] = complex(0, 1) * math.log(Gamm ** 2 + (iota) ** 2)
-        lg1kqm[n] = complex(0, 1) * math.log(Gamm ** 2 + (kappa) ** 2)
+        lg1kp[n] = complex(0, 1) * math.log(Gammsq + omisq)
+        lg1kqp[n] = complex(0, 1) * math.log(Gammsq + phisq)
+        lg1km[n] = complex(0, 1) * math.log(Gammsq + iotasq)
+        lg1kqm[n] = complex(0, 1) * math.log(Gammsq + kappasq)
 
         ferp[n] = helpers.my_heaviside(mu - chi - nu)
         ferm[n] = helpers.my_heaviside(mu + chi - nu)
@@ -99,11 +105,14 @@ def modDsN2(x):
         zeta = ek - mu + xi
         eta = ekq - mu + xi
 
+        zetasq = zeta ** 2
+        etasq = eta ** 2
+
         taninv2k[n] = 2 * math.atan2(Gamm, zeta)
         taninv2kq[n] = 2 * math.atan2(Gamm, eta)
 
-        lg2k[n] = complex(0, 1) * math.log(Gamm ** 2 + (zeta) ** 2)
-        lg2kq[n] = complex(0, 1) * math.log(Gamm ** 2 + (eta) ** 2)
+        lg2k[n] = complex(0, 1) * math.log(Gammsq + zetasq)
+        lg2kq[n] = complex(0, 1) * math.log(Gammsq + etasq)
 
         besk[n] = cudabesselj.besselj(i, xk)
         beskq[n] = cudabesselj.besselj(i, xkq)

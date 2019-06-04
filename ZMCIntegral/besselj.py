@@ -43,7 +43,7 @@ def besselj(n, x):
             bj = bjp
         bessj = bj
     else:
-        m = int(2*(n + int(math.sqrt(float(IACC * n)))/2))
+        m = int(2*(n + math.sqrt(float(IACC * n))/2))
         
         bessj = 0
         jsum = 0
