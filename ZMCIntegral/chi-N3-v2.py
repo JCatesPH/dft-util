@@ -7,7 +7,7 @@
 
 
 import math
-from numba import cuda
+# from numba import cuda
 import ZMCIntegral
 import time
 import numpy as np
@@ -27,33 +27,7 @@ KT = 1 * 10 ** (-6)
 shift = A * (eE0 / hOmg) ** 2
 
 
-@cuda.jit(device=True)
-def my_Besselv(v, z):
-    # WILL NOT WORK IF v IS NOT AN INTEGER
-    # Conditional to handle case of negative v.
-    if(v < 0):
-        v = abs(v)
-        resultsign = (-1) ** v
-    else:
-        resultsign = 1
-    result = 0    
-    # Loop to construct Bessel series sum.
-    for n in range(0,20):
-        sign = (-1)**n
-        exp = 2 * n + v
-        term = z ** exp
-        r = n + v + 1
-        denom = math.gamma(r)
-        denom = denom * math.gamma(n+1)
-        denom = denom * (2 ** exp)
-        term = term / denom * sign
-        # print('for ', n, ': ',term)
-        result = result + term
-        
-    return result * resultsign
-
-
-@cuda.jit(device=True)        
+@numba.cuda.jit(device=True)        
 def modDsN2(x):
     N = 3
     dds = 0
@@ -64,18 +38,18 @@ def modDsN2(x):
     xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
     xkq = 2 * A * eE0 * math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2) / hOmg ** 2
 
-    taninv1kp = cuda.shared.array(shape=N,dtype='float64')
-    taninv1kqp = numba.types.Array('float64', N, A)
-    taninv1km = numba.types.Array('float64', N, A)
-    taninv1kqm = numba.types.Array('float64', N, A)
+    taninv1kp = numba.cuda.shared.array(N,dtype=numba.types.float64)
+    taninv1kqp = numba.cuda.shared.array(N,dtype=numba.types.float64)
+    taninv1km = numba.cuda.shared.array(N,dtype=numba.types.float64)
+    taninv1kqm = numba.cuda.shared.array(N,dtype=numba.types.float64)
 
-    lg1kp = numba.types.Array('complex128', N, A)
-    lg1kqp = numba.types.Array('complex128', N, A)
-    lg1km = numba.types.Array('complex128', N, A)
-    lg1kqm = numba.types.Array('complex128', N, A)
+    lg1kp = numba.cuda.shared.array(N,dtype=numba.types.complex128)
+    lg1kqp = numba.cuda.shared.array(N,dtype=numba.types.complex128)
+    lg1km = numba.cuda.shared.array(N,dtype=numba.types.complex128)
+    lg1kqm = numba.cuda.shared.array(N,dtype=numba.types.complex128)
 
-    ferp = numba.types.Array('float64', N, A)
-    ferm = numba.types.Array('float64', N, A)
+    ferp = numba.cuda.shared.array(N,dtype=numba.types.float64)
+    ferm = numba.cuda.shared.array(N,dtype=numba.types.float64)
   
     j = 0
     i = -(N - 1) / 2
@@ -103,18 +77,18 @@ def modDsN2(x):
         j = j + 1
 
     size_dbl = 2 * N - 1
-    taninv2k = numba.types.Array('float64', size_dbl, A)
-    taninv2kq = numba.types.Array('float64', size_dbl, A)
+    taninv2k = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
+    taninv2kq = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
 
-    lg2k = numba.types.Array('complex128', size_dbl, A)
-    lg2kq = numba.types.Array('complex128', size_dbl, A)
+    lg2k = numba.cuda.shared.array(size_dbl,dtype=numba.types.complex128)
+    lg2kq = numba.cuda.shared.array(size_dbl,dtype=numba.types.complex128)
     
-    besk = numba.types.Array('float64', size_dbl, A)
-    beskq = numba.types.Array('float64', size_dbl, A)
+    besk = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
+    beskq = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
 
-    fac1 = numba.types.Array('complex128', size_dbl, A)
-    fac2 = numba.types.Array('complex128', size_dbl, A)
-    fac3 = numba.types.Array('complex128', size_dbl, A)
+    fac1 = numba.cuda.shared.array(size_dbl,dtype=numba.types.complex128)
+    fac2 = numba.cuda.shared.array(size_dbl,dtype=numba.types.complex128)
+    fac3 = numba.cuda.shared.array(size_dbl,dtype=numba.types.complex128)
     
     j = 0
     for i in range(-(N - 1), N, 1):
@@ -128,8 +102,8 @@ def modDsN2(x):
         lg2k[j] = complex(0, 1) * math.log(Gamm ** 2 + (zeta) ** 2)
         lg2kq[j] = complex(0, 1) * math.log(Gamm ** 2 + (eta) ** 2)
 
-        besk[j] = my_Besselv(i, xk)
-        beskq[j] = my_Besselv(i, xkq)
+        besk[j] = cudabesselj.besselj(i, xk)
+        beskq[j] = cudabesselj.besselj(i, xkq)
 
         fac1[j] = ek - ekq + xi
         fac2[j] = fac1[j] + 2 * complex(0, 1) * Gamm
