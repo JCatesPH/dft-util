@@ -184,27 +184,68 @@ def modDsN2(x):
 
 
 
+tic = time.time()
+
+print('Following values are constant for all integrations.')
+print('\n========================================================')
+print('\ndepth = 3')
+print('sigma_multiplication = 100')
+print('num_trials = 10')
+print('available_GPU = [0]')
+print('kxi = - math.pi / a')
+print('kxf = math.pi / a')
+print('kyi = - math.pi / a')
+print('kyf = math.pi / a')
+print('\n========================================================')
+
+# qx = getqx()
+
+# SET PARAMETERS AND LIMITS OF INTEGRATION
 kxi = - math.pi / a
 kxf = math.pi / a
 
 kyi = - math.pi / a
 kyf = math.pi / a
 
-helpers.setqx(0.01)
+# qx = [0.001,6pi/a]
 
-MC = ZMCIntegral.MCintegral(modDsN2,[[kxi,kxf],[kyi,kyf]])
+resultArr = np.zeros(100)
+errorArr = np.zeros(100)
+timeArr = np.zeros(100)
+j = 0
+for i in np.linspace(.01, .785, 100):
 
-# Setting the zmcintegral parameters
-MC.depth = 3
-MC.sigma_multiplication = 100
-MC.num_trials = 10
+    setqx(i)
+    MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
+    # Setting the zmcintegral parameters
+    MC.depth = 3
+    MC.sigma_multiplication = 100
+    MC.num_trials = 10
+    start = time.time()
+    result = MC.evaluate()
+    print('Result for qx = ',i, ': ', result[0], ' with error: ', result[1])
+    print('================================================================')
+    end = time.time()
+    print('Computed in ', end-start, ' seconds.')
+    print('================================================================')
+    resultArr[j] = result[0]
+    errorArr[j] = result[1]
+    timeArr[j] = end - start
+    j = j + 1
 
-start = time.time()
 
-result = MC.evaluate()
-print('Result for qx = 0.01 :', result[0], ' with error: ', result[1])
+
+
 print('================================================================')
 
-end = time.time()
-print('Computed in ', end-start, ' seconds.')
-print('================================================================')
+
+j = 0
+print('All values in csv format:')
+for i in np.linspace(.01, .785, 100):
+    print('%5.3f, %11.8E, %5.3E, %5.3E' % (i, resultArr[j], errorArr[j], timeArr[j]))
+    j = j + 1
+
+toc = time.time()
+print('================================================================\n')
+print('Process completed successfully!')
+print('Total time is ', toc-tic, 'seconds.')
