@@ -13,6 +13,7 @@ import time
 import numpy as np
 import helpers
 import numba
+import cudabesselj
 # # Define constants in function
 
 mu = 0.1  # Fermi-level
