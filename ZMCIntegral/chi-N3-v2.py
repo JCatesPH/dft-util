@@ -87,7 +87,7 @@ def modDsN2(x):
 
     numba.cuda.syncthreads()
 
-    size_dbl = 2 * N - 1
+    size_dbl = 5
     taninv2k = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
     taninv2kq = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
 

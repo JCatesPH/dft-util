@@ -12,7 +12,7 @@ def testfoo(x):
 	for i in range(-(N-1)/2,(N-1)/2):
 		f[n] = math.sin(x[0]+x[1])
 		n = n + 1
-	return f[0] + f[N]
+	return f[0] + f[N-1]
 
 
 x = np.linspace(0,10,1)
