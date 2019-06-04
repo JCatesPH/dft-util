@@ -78,8 +78,10 @@ def modDsN2(x):
         lg1km[n] = complex(0, 1) * math.log(Gammsq + iotasq)
         lg1kqm[n] = complex(0, 1) * math.log(Gammsq + kappasq)
 
-        ferp[n] = helpers.my_heaviside(mu - chi - nu)
-        ferm[n] = helpers.my_heaviside(mu + chi - nu)
+        chinu = chi - nu
+
+        ferp[n] = helpers.my_heaviside(mu - chinu)
+        ferm[n] = helpers.my_heaviside(mu + chinu)
         i = i + 1
         n = n + 1
 
@@ -111,15 +113,20 @@ def modDsN2(x):
         taninv2k[n] = 2 * math.atan2(Gamm, zeta)
         taninv2kq[n] = 2 * math.atan2(Gamm, eta)
 
-        lg2k[n] = complex(0, 1) * math.log(Gammsq + zetasq)
-        lg2kq[n] = complex(0, 1) * math.log(Gammsq + etasq)
+        logged1 = math.log(Gammsq + zetasq)
+        logged2 = math.log(Gammsq + etasq)
+
+        lg2k[n] = complex(0, logged1)
+        lg2kq[n] = complex(0, logged2)
 
         besk[n] = cudabesselj.besselj(i, xk)
         beskq[n] = cudabesselj.besselj(i, xkq)
 
-        fac1[n] = ek - ekq + xi
-        fac2[n] = fac1[n] + 2 * complex(0, 1) * Gamm
-        fac3[n] = fac2[n] - ek + ekq
+        fac1i = ek - ekq + xi
+        fac2i = complex(fac1i, 2 * Gamm)
+        fac1[n] = fac1i
+        fac2[n] = fac2i
+        fac3[n] = fac2i - ek + ekq
         n = n + 1
 
     numba.cuda.syncthreads()
@@ -130,73 +137,47 @@ def modDsN2(x):
                 for gamma in range(0, N):
                     for s in range(0, N):
                         for l in range(0, N):
-                            p1p = fac1[beta - gamma + N - 1] * (
-                                    taninv1kp[alpha] - taninv2k[s + alpha] - lg1kp[alpha] + lg2k[s + alpha])
-                            p2p = fac2[alpha - gamma + N - 1] * (
-                                    taninv1kp[beta] - taninv2k[s + beta] + lg1kp[beta] - lg2k[s + beta])
-                            p3p = fac3[alpha - beta + N - 1] * (
-                                    -taninv1kqp[gamma] + taninv2kq[s + gamma] - lg1kqp[gamma] + lg2kq[
-                                s + gamma])
+                            p1p = fac1[beta - gamma + N - 1] * (taninv1kp[alpha] - taninv2k[s + alpha] - lg1kp[alpha] + lg2k[s + alpha])
+                            p2p = fac2[alpha - gamma + N - 1] * (taninv1kp[beta] - taninv2k[s + beta] + lg1kp[beta] - lg2k[s + beta])
+                            p3p = fac3[alpha - beta + N - 1] * (-taninv1kqp[gamma] + taninv2kq[s + gamma] - lg1kqp[gamma] + lg2kq[s + gamma])
 
-                            p1m = fac1[beta - gamma + N - 1] * (
-                                    taninv1km[alpha] - taninv2k[s + alpha] - lg1km[alpha] + lg2k[s + alpha])
+                            p1m = fac1[beta - gamma + N - 1] * (taninv1km[alpha] - taninv2k[s + alpha] - lg1km[alpha] + lg2k[s + alpha])
 
-                            p2m = fac2[alpha - gamma + N - 1] * (
-                                    taninv1km[beta] - taninv2k[s + beta] + lg1km[beta] - lg2k[s + beta])
+                            p2m = fac2[alpha - gamma + N - 1] * ( taninv1km[beta] - taninv2k[s + beta] + lg1km[beta] - lg2k[s + beta])
 
-                            p3m = fac3[alpha - beta + N - 1] * (
-                                    -taninv1kqm[gamma] + taninv2kq[s + gamma] - lg1kqm[gamma] + lg2kq[
-                                s + gamma])
+                            p3m = fac3[alpha - beta + N - 1] * (-taninv1kqm[gamma] + taninv2kq[s + gamma] - lg1kqm[gamma] + lg2kq[s + gamma])
 
-                            d1 = -2 * complex(0, 1) * fac1[beta - gamma + N - 1] * fac2[alpha - gamma + N - 1] * \
-                                 fac3[
-                                     alpha - beta + N - 1]
+                            d1 = -2 * complex(0, 1) * fac1[beta - gamma + N - 1] * fac2[alpha - gamma + N - 1] * fac3[alpha - beta + N - 1]
 
                             omint1p = ferp[s] * ((p1p + p2p + p3p) / d1)
 
                             omint1m = ferm[s] * ((p1m + p2m + p3m) / d1)
 
-                            bess1 = beskq[gamma - n + N - 1] * beskq[gamma - l + N - 1] * besk[beta - l + N - 1] * besk[
-                                beta - s + N - 1] * besk[alpha - s + N - 1] * besk[alpha - n + N - 1]
+                            bess1 = beskq[gamma - n + N - 1] * beskq[gamma - l + N - 1] * besk[beta - l + N - 1] * besk[beta - s + N - 1] * besk[alpha - s + N - 1] * besk[alpha - n + N - 1]
 
                             grgl = bess1 * (omint1p - omint1m)
 
-                            pp1p = fac1[alpha - beta + N - 1] * (
-                                    -taninv1kqp[gamma] + taninv2kq[s + gamma] - lg1kqp[gamma] + lg2kq[
-                                s + gamma])
+                            pp1p = fac1[alpha - beta + N - 1] * (-taninv1kqp[gamma] + taninv2kq[s + gamma] - lg1kqp[gamma] + lg2kq[s + gamma])
 
-                            pp2p = fac2[alpha - gamma + N - 1] * (
-                                    -taninv1kqp[beta] + taninv2kq[s + beta] + lg1kqp[beta] - lg2kq[
-                                s + beta])
+                            pp2p = fac2[alpha - gamma + N - 1] * (-taninv1kqp[beta] + taninv2kq[s + beta] + lg1kqp[beta] - lg2kq[s + beta])
 
-                            pp3p = fac3[beta - gamma + N - 1] * (
-                                    taninv1kp[alpha] - taninv2k[s + alpha] - lg1kp[alpha] + lg2k[s + alpha])
+                            pp3p = fac3[beta - gamma + N - 1] * (taninv1kp[alpha] - taninv2k[s + alpha] - lg1kp[alpha] + lg2k[s + alpha])
 
-                            pp1m = fac1[alpha - beta + N - 1] * (
-                                    -taninv1kqm[gamma] + taninv2kq[s + gamma] - lg1kqm[gamma] + lg2kq[
-                                s + gamma])
+                            pp1m = fac1[alpha - beta + N - 1] * (-taninv1kqm[gamma] + taninv2kq[s + gamma] - lg1kqm[gamma] + lg2kq[s + gamma])
 
-                            pp2m = fac2[alpha - gamma + N - 1] * (
-                                    -taninv1kqm[beta] + taninv2kq[s + beta] + lg1kqm[beta] - lg2kq[
-                                s + beta])
+                            pp2m = fac2[alpha - gamma + N - 1] * (-taninv1kqm[beta] + taninv2kq[s + beta] + lg1kqm[beta] - lg2kq[s + beta])
 
-                            pp3m = fac3[beta - gamma + N - 1] * (
-                                    taninv1km[alpha] - taninv2k[s + alpha] - lg1km[alpha] + lg2k[s + alpha])
+                            pp3m = fac3[beta - gamma + N - 1] * (taninv1km[alpha] - taninv2k[s + alpha] - lg1km[alpha] + lg2k[s + alpha])
 
-                            d2 = -2 * complex(0, 1) * fac1[alpha - beta + N - 1] * fac2[alpha - gamma + N - 1] * \
-                                 fac3[
-                                     beta - gamma + N - 1]
+                            d2 = -2 * complex(0, 1) * fac1[alpha - beta + N - 1] * fac2[alpha - gamma + N - 1] * fac3[beta - gamma + N - 1]
 
                             omint2p = ferp[s] * ((pp1p + pp2p + pp3p) / d2)
 
                             omint2m = ferm[s] * ((pp1m + pp2m + pp3m) / d2)
 
-                            bess2 = beskq[gamma - n + N - 1] * beskq[gamma - s + N - 1] * beskq[beta - s + N - 1] * \
-                                    beskq[beta - l + N - 1] * besk[alpha - l + N - 1] * besk[alpha - n + N - 1]
+                            bess2 = beskq[gamma - n + N - 1] * beskq[gamma - s + N - 1] * beskq[beta - s + N - 1] * beskq[beta - l + N - 1] * besk[alpha - l + N - 1] * besk[alpha - n + N - 1]
 
                             glga = bess2 * (omint2p - omint2m)
-
-                            numba.cuda.syncthreads()
 
                             dds = dds + 2 * Gamm * (grgl + glga)
     return dds.real
