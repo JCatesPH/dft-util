@@ -44,7 +44,7 @@ def modDsN2(x):
 
     n = 0
     i = -(N - 1) / 2
-    while(i < ((N - 1) / 2 + 1)):
+    while(i < ((N - 1) / 2)):
         nu = hOmg * i
         chi = hOmg / 2
         omicron = ek - chi + nu
