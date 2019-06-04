@@ -1,0 +1,5 @@
+  File "./vec-test.py", line 10
+    f(i) = math.sin(x/i)
+    ^
+SyntaxError: can't assign to function call
+srun: error: gpu-0-0: task 0: Exited with exit code 1
