@@ -52,7 +52,7 @@ def modDsN2(x):
     ferp = numba.cuda.shared.array(N,dtype=numba.types.float64)
     ferm = numba.cuda.shared.array(N,dtype=numba.types.float64)
   
-    j = 0
+    n = 0
     i = -(N - 1) / 2
     while(i < ((N - 1) / 2 + 1)):
         nu = hOmg * i
@@ -62,20 +62,20 @@ def modDsN2(x):
         iota = ek + chi + nu
         kappa = ekq + chi + nu
 
-        taninv1kp[j] = 2 * math.atan2(Gamm, omicron)
-        taninv1kqp[j] = 2 * math.atan2(Gamm, phi)
-        taninv1km[j] = 2 * math.atan2(Gamm, iota)
-        taninv1kqm[j] = 2 * math.atan2(Gamm, kappa)
+        taninv1kp[n] = 2 * math.atan2(Gamm, omicron)
+        taninv1kqp[n] = 2 * math.atan2(Gamm, phi)
+        taninv1km[n] = 2 * math.atan2(Gamm, iota)
+        taninv1kqm[n] = 2 * math.atan2(Gamm, kappa)
 
-        lg1kp[j] = complex(0, 1) * math.log(Gamm ** 2 + (omicron) ** 2)
-        lg1kqp[j] = complex(0, 1) * math.log(Gamm ** 2 + (phi) ** 2)
-        lg1km[j] = complex(0, 1) * math.log(Gamm ** 2 + (iota) ** 2)
-        lg1kqm[j] = complex(0, 1) * math.log(Gamm ** 2 + (kappa) ** 2)
+        lg1kp[n] = complex(0, 1) * math.log(Gamm ** 2 + (omicron) ** 2)
+        lg1kqp[n] = complex(0, 1) * math.log(Gamm ** 2 + (phi) ** 2)
+        lg1km[n] = complex(0, 1) * math.log(Gamm ** 2 + (iota) ** 2)
+        lg1kqm[n] = complex(0, 1) * math.log(Gamm ** 2 + (kappa) ** 2)
 
-        ferp[j] = helpers.my_heaviside(mu - chi - nu)
-        ferm[j] = helpers.my_heaviside(mu + chi - nu)
+        ferp[n] = helpers.my_heaviside(mu - chi - nu)
+        ferm[n] = helpers.my_heaviside(mu + chi - nu)
         i = i + 1
-        j = j + 1
+        n = n + 1
 
     numba.cuda.syncthreads()
 
@@ -93,25 +93,25 @@ def modDsN2(x):
     fac2 = numba.cuda.shared.array(size_dbl,dtype=numba.types.complex128)
     fac3 = numba.cuda.shared.array(size_dbl,dtype=numba.types.complex128)
     
-    j = 0
+    n = 0
     for i in range(-(N - 1), N, 1):
         xi = hOmg * i
         zeta = ek - mu + xi
         eta = ekq - mu + xi
 
-        taninv2k[j] = 2 * math.atan2(Gamm, zeta)
-        taninv2kq[j] = 2 * math.atan2(Gamm, eta)
+        taninv2k[n] = 2 * math.atan2(Gamm, zeta)
+        taninv2kq[n] = 2 * math.atan2(Gamm, eta)
 
-        lg2k[j] = complex(0, 1) * math.log(Gamm ** 2 + (zeta) ** 2)
-        lg2kq[j] = complex(0, 1) * math.log(Gamm ** 2 + (eta) ** 2)
+        lg2k[n] = complex(0, 1) * math.log(Gamm ** 2 + (zeta) ** 2)
+        lg2kq[n] = complex(0, 1) * math.log(Gamm ** 2 + (eta) ** 2)
 
-        besk[j] = cudabesselj.besselj(i, xk)
-        beskq[j] = cudabesselj.besselj(i, xkq)
+        besk[n] = cudabesselj.besselj(i, xk)
+        beskq[n] = cudabesselj.besselj(i, xkq)
 
-        fac1[j] = ek - ekq + xi
-        fac2[j] = fac1[j] + 2 * complex(0, 1) * Gamm
-        fac3[j] = fac2[j] - ek + ekq
-        j = j + 1
+        fac1[n] = ek - ekq + xi
+        fac2[n] = fac1[n] + 2 * complex(0, 1) * Gamm
+        fac3[n] = fac2[n] - ek + ekq
+        n = n + 1
 
     numba.cuda.syncthreads()
 

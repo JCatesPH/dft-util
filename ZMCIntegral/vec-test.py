@@ -7,9 +7,11 @@ import numba
 @numba.cuda.jit(device=True)
 def testfoo(x):
 	N = 3
+	n = 0
 	f = numba.cuda.shared.array(N,dtype=numba.types.float64)
-	for i in range(0,N):
-		f[i] = math.sin(x[0]+x[1])
+	for i in range(-(N-1)/2,(N-1)/2):
+		f[n] = math.sin(x[0]+x[1])
+		n = n + 1
 	return f[0] + f[N]
 
 
