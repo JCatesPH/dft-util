@@ -76,6 +76,8 @@ def modDsN2(x):
         i = i + 1
         j = j + 1
 
+    numba.cuda.syncthreads()
+
     size_dbl = 2 * N - 1
     taninv2k = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
     taninv2kq = numba.cuda.shared.array(size_dbl,dtype=numba.types.float64)
@@ -110,6 +112,7 @@ def modDsN2(x):
         fac3[j] = fac2[j] - ek + ekq
         j = j + 1
 
+    numba.cuda.syncthreads()
 
     for n in range(0, N):
         for alpha in range(0, N):
@@ -182,6 +185,8 @@ def modDsN2(x):
                                     beskq[beta - l + N - 1] * besk[alpha - l + N - 1] * besk[alpha - n + N - 1]
 
                             glga = bess2 * (omint2p - omint2m)
+
+                            numba.cuda.syncthreads()
 
                             dds = dds + 2 * Gamm * (grgl + glga)
     return dds.real
