@@ -1,5 +1,0 @@
-  File "./vec-test.py", line 9
-    f = array(float32, 1d, A)
-                        ^
-SyntaxError: invalid syntax
-srun: error: gpu-0-0: task 0: Exited with exit code 1
