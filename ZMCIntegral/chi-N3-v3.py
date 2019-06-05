@@ -31,7 +31,7 @@ Gammsq = Gamm ** 2
 
 @numba.cuda.jit(device=True)        
 def modDsN2(x):
-    N = 3
+    N = 1
     dds = 0
     # ds = 0 # UNUSED
     qx = helpers.getqx()
@@ -76,7 +76,7 @@ def modDsN2(x):
 
     numba.cuda.syncthreads()
 
-    size_dbl = 5
+    size_dbl = 1
     dblmatrix = numba.cuda.shared.array((9,size_dbl),dtype=numba.types.complex128)
 
     n = 0
