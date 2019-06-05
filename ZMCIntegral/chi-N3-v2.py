@@ -215,7 +215,7 @@ timeArr = np.zeros(100)
 j = 0
 for i in np.linspace(.01, .785, 100):
 
-    setqx(i)
+    helpers.setqx(i)
     MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
     # Setting the zmcintegral parameters
     MC.depth = 3

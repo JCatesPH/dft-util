@@ -157,8 +157,8 @@ def modDsN2(x):
 
                             glga = bess2 * (omint2p - omint2m)
 
-                            dds = dds + 2 * Gamm * (grgl + glga)
-    return dds.real
+                            dds = dds + Gamm * (grgl + glga)
+    return -4 * dds.real / math.pi ** 2
 
 
 
