@@ -11,9 +11,8 @@ import math
 import ZMCIntegral
 import time
 import numpy as np
-import helpers
+import cudahelpers
 import numba
-import cudabesselj
 # # Define constants in function
 
 mu = 0.1  # Fermi-level
@@ -34,7 +33,7 @@ def modDsN2(x):
     N = 3
     dds = 0
     # ds = 0 # UNUSED
-    qx = helpers.getqx()
+    qx = cudahelpers.getqx()
     ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     ekq = A * (math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
@@ -69,8 +68,8 @@ def modDsN2(x):
 
         chinu = chi - nu
 
-        singmatrix[8,n] = helpers.my_heaviside(mu - chinu)
-        singmatrix[9,n] = helpers.my_heaviside(mu + chinu)
+        singmatrix[8,n] = cudahelpers.my_heaviside(mu - chinu)
+        singmatrix[9,n] = cudahelpers.my_heaviside(mu + chinu)
         i = i + 1
         n = n + 1
 
@@ -97,8 +96,8 @@ def modDsN2(x):
         dblmatrix[2,n] = complex(0, logged1)
         dblmatrix[3,n] = complex(0, logged2)
 
-        dblmatrix[4,n] = cudabesselj.besselj(i, xk)
-        dblmatrix[5,n] = cudabesselj.besselj(i, xkq)
+        dblmatrix[4,n] = cudahelpers.besselj(i, xk)
+        dblmatrix[5,n] = cudahelpers.besselj(i, xkq)
 
         fac1i = ek - ekq + xi
         fac2i = complex(fac1i, 2 * Gamm)
@@ -193,7 +192,7 @@ timeArr = np.zeros(100)
 j = 0
 for i in np.linspace(.01, .785, 100):
 
-    helpers.setqx(i)
+    cudahelpers.setqx(i)
     MC = ZMCIntegral.MCintegral(modDsN2,[[kxi,kxf],[kyi,kyf]])
     # Setting the zmcintegral parameters
     MC.depth = 2
