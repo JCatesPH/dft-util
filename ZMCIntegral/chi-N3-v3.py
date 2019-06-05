@@ -166,9 +166,9 @@ tic = time.time()
 
 print('Following values are constant for all integrations.')
 print('\n========================================================')
-print('\ndepth = 3')
-print('sigma_multiplication = 10,000')
-print('num_trials = 8')
+print('\ndepth = 2')
+print('sigma_multiplication = 1,000,000')
+print('num_trials = 5')
 print('available_GPU = [0]')
 print('kxi = - math.pi / a')
 print('kxf = math.pi / a')
@@ -196,9 +196,9 @@ for i in np.linspace(.01, .785, 100):
     helpers.setqx(i)
     MC = ZMCIntegral.MCintegral(modDsN2,[[kxi,kxf],[kyi,kyf]])
     # Setting the zmcintegral parameters
-    MC.depth = 3
-    MC.sigma_multiplication = 1E4
-    MC.num_trials = 8
+    MC.depth = 2
+    MC.sigma_multiplication = 1E6
+    MC.num_trials = 5
     start = time.time()
     result = MC.evaluate()
     print('Result for qx = ',i, ': ', result[0], ' with error: ', result[1])
