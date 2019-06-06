@@ -3,8 +3,8 @@ import time
 
 import numba
 import numpy as np
+from numba import cuda
 
-import cudahelpers
 import ZMCIntegral
 
 @numba.cuda.jit(device=True)
