@@ -34,8 +34,18 @@ def nestedfoo2(x):
     return tmp
 
 
-an_array = np.array(1)
-an_array[0] = 5
-threadsperblock = 16
-blockspergrid = (an_array.size + (threadsperblock - 1)) // threadsperblock
-nestedfoo2[blockspergrid, threadsperblock](an_array)
+
+# Create the data array - usually initialized some other way
+data = numpy.ones(256)
+
+# Set the number of threads in a block
+threadsperblock = 32 
+
+# Calculate the number of thread blocks in the grid
+blockspergrid = (data.size + (threadsperblock - 1)) // threadsperblock
+
+# Now start the kernel
+nestedfoo2[blockspergrid, threadsperblock](data)
+
+# Print the result
+print(data)
