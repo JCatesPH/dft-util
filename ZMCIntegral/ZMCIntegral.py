@@ -19,13 +19,6 @@ import random
 import os
 from numba.cuda.random import create_xoroshiro128p_states, xoroshiro128p_uniform_float64
 
-def setChunks(x): 
-    global CHUNK_RESULTS
-    CHUNK_RESULTS = x
-    return
-
-def getChunks():
-    return CHUNK_RESULTS
 
 class MCintegral():
 
