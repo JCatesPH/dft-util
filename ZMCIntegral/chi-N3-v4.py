@@ -106,71 +106,65 @@ def modDsN2(x):
         i = i + 1
 
     for n in range(0, N):
+        nmod = n + N - 1
         for alpha in range(0, N):
             for beta in range(0, N):
+                abdiff = alpha - beta + N - 1
+
                 for gamma in range(0, N):
+                    bgdiff = beta - gamma + N - 1
+                    agdiff = alpha - gamma + N - 1
+
+                    d1 = -2 * complex(0, 1) * dblrmatrix[4,bgdiff] * dblzmatrix[2,agdiff] * dblzmatrix[3,abdiff]
+                    d2 = -2 * complex(0, 1) * dblrmatrix[4,abdiff] * dblzmatrix[2,agdiff] * dblzmatrix[3,bgdiff]
+
                     for s in range(0, N):
+                        smod = s + N - 1
+                        rho = s + alpha
+                        tau = s + beta
+                        upsilon = s + gamma
+
+                        sdr00 = singrmatrix[0,alpha] - dblrmatrix[0,rho]
+                        sdr20 = singrmatrix[2,alpha] - dblrmatrix[0,rho]
+                        sdr11 = -singrmatrix[1,gamma] + dblrmatrix[1,upsilon]
+                        sdr31 = -singrmatrix[3,gamma] + dblrmatrix[1,upsilon]
+                        
+                        sdz00 = singzmatrix[0,alpha] + dblzmatrix[0,rho]
+                        sdz20 = singzmatrix[2,alpha] + dblzmatrix[0,rho]
+                        sdz11 = singzmatrix[1,gamma] + dblzmatrix[1,upsilon]
+                        sdz31 = singzmatrix[3,gamma] + dblzmatrix[1,upsilon]
+
+                        dd11 = dblrmatrix[1,tau] - dblzmatrix[1,tau]
+                        dd00 = dblrmatrix[0,tau] + dblzmatrix[0,tau]
+                        
+                        p1p = dblrmatrix[4,bgdiff] * (sdr00 - sdz00)
+                        p2p = dblzmatrix[2,agdiff] * (singrmatrix[0,beta] - dd00 + singzmatrix[0,beta])
+                        p3p = dblzmatrix[3,abdiff] * (sdr11 - sdz11)
+
+                        p1m = dblrmatrix[4,bgdiff] * (sdr20 - sdz20)
+                        p2m = dblzmatrix[2,agdiff] * (singrmatrix[2,beta] - dd00 + singzmatrix[2,beta])
+                        p3m = dblzmatrix[3,abdiff] * (sdr31 - sdz31)
+
+                        omint1p = singrmatrix[4,s] * ((p1p + p2p + p3p) / d1)
+                        omint1m = singrmatrix[5,s] * ((p1m + p2m + p3m) / d1)
+
+                        pp1p = dblrmatrix[4,abdiff] * (sdr11 - sdz11)
+                        pp2p = dblzmatrix[2,agdiff] * (-singrmatrix[1,beta] + dd11 + singzmatrix[1,beta])
+                        pp3p = dblzmatrix[3,bgdiff] * (sdr00 - sdz00)
+
+                        pp1m = dblrmatrix[4,abdiff] * (sdr31 - sdz31)
+                        pp2m = dblzmatrix[2,agdiff] * (-singrmatrix[3,beta] + dd11 + singzmatrix[3,beta])
+                        pp3m = dblzmatrix[3,bgdiff] * (sdr20 - sdz20)
+
+                        omint2p = singrmatrix[4,s] * ((pp1p + pp2p + pp3p) / d2)
+                        omint2m = singrmatrix[5,s] * ((pp1m + pp2m + pp3m) / d2)
+
                         for l in range(0, N):
-                            rho = s + alpha
-                            tau = s + beta
-                            upsilon = s + gamma
-                            bgdiff = beta - gamma + N - 1
-                            agdiff = alpha - gamma + N - 1
-                            abdiff = alpha - beta + N - 1
-                            nmod = n + N - 1
-                            smod = s + N - 1
                             lmod = l + N - 1
-
-                            sdr00 = singrmatrix[0,alpha] - dblrmatrix[0,rho]
-                            sdr20 = singrmatrix[2,alpha] - dblrmatrix[0,rho]
-                            sdr11 = -singrmatrix[1,gamma] + dblrmatrix[1,upsilon]
-                            sdr31 = -singrmatrix[3,gamma] + dblrmatrix[1,upsilon]
-                            
-                            sdz00 = singzmatrix[0,alpha] + dblzmatrix[0,rho]
-                            sdz20 = singzmatrix[2,alpha] + dblzmatrix[0,rho]
-                            sdz11 = singzmatrix[1,gamma] + dblzmatrix[1,upsilon]
-                            sdz31 = singzmatrix[3,gamma] + dblzmatrix[1,upsilon]
-                            
-                            dd11 = dblrmatrix[1,tau] - dblzmatrix[1,tau]
-                            dd00 = dblrmatrix[0,tau] + dblzmatrix[0,tau]
-
-                            p1p = dblrmatrix[4,bgdiff] * (sdr00 - sdz00)
-                            p2p = dblzmatrix[2,agdiff] * (singrmatrix[0,beta] - dd00 + singzmatrix[0,beta])
-                            p3p = dblzmatrix[3,abdiff] * (sdr11 - sdz11)
-
-                            p1m = dblrmatrix[4,bgdiff] * (sdr20 - sdz20)
-
-                            p2m = dblzmatrix[2,agdiff] * (singrmatrix[2,beta] - dd00 + singzmatrix[2,beta])
-
-                            p3m = dblzmatrix[3,abdiff] * (sdr31 - sdz31)
-
-                            d1 = -2 * complex(0, 1) * dblrmatrix[4,bgdiff] * dblzmatrix[2,agdiff] * dblzmatrix[3,abdiff]
-
-                            omint1p = singrmatrix[4,s] * ((p1p + p2p + p3p) / d1)
-
-                            omint1m = singrmatrix[5,s] * ((p1m + p2m + p3m) / d1)
 
                             bess1 = dblrmatrix[3,gamma - nmod] * dblrmatrix[3,gamma - lmod] * dblrmatrix[2,beta - lmod] * dblrmatrix[2,beta - smod] * dblrmatrix[2,alpha - smod] * dblrmatrix[2,alpha - nmod]
 
                             grgl = bess1 * (omint1p - omint1m)
-
-                            pp1p = dblrmatrix[4,abdiff] * (sdr11 - sdz11)
-
-                            pp2p = dblzmatrix[2,agdiff] * (-singrmatrix[1,beta] + dd11 + singzmatrix[1,beta])
-
-                            pp3p = dblzmatrix[3,bgdiff] * (sdr00 - sdz00)
-
-                            pp1m = dblrmatrix[4,abdiff] * (sdr31 - sdz31)
-
-                            pp2m = dblzmatrix[2,agdiff] * (-singrmatrix[3,beta] + dd11 + singzmatrix[3,beta])
-
-                            pp3m = dblzmatrix[3,bgdiff] * (sdr20 - sdz20)
-
-                            d2 = -2 * complex(0, 1) * dblrmatrix[4,abdiff] * dblzmatrix[2,agdiff] * dblzmatrix[3,bgdiff]
-
-                            omint2p = singrmatrix[4,s] * ((pp1p + pp2p + pp3p) / d2)
-
-                            omint2m = singrmatrix[5,s] * ((pp1m + pp2m + pp3m) / d2)
 
                             bess2 = dblrmatrix[3,gamma - nmod] * dblrmatrix[3,gamma - smod] * dblrmatrix[3,beta - smod] * dblrmatrix[3,beta - lmod] * dblrmatrix[2,alpha - lmod] * dblrmatrix[2,alpha - nmod]
 
@@ -183,11 +177,15 @@ def modDsN2(x):
 
 tic = time.time()
 
+depths = 2
+sigmults = 1E4
+trials = 5
+
 print('Following values are constant for all integrations.')
 print('\n========================================================')
-print('\ndepth = 2')
-print('sigma_multiplication = 1,000,000')
-print('num_trials = 5')
+print('\ndepth = ', depths)
+print('sigma_multiplication = ', sigmults)
+print('num_trials = ', trials)
 print('available_GPU = [0]')
 print('kxi = - math.pi / a')
 print('kxf = math.pi / a')
@@ -215,9 +213,9 @@ for i in np.linspace(.01, .785, 100):
     cudahelpers.setqx(i)
     MC = ZMCIntegral.MCintegral(modDsN2,[[kxi,kxf],[kyi,kyf]])
     # Setting the zmcintegral parameters
-    MC.depth = 2
-    MC.sigma_multiplication = 1E6
-    MC.num_trials = 5
+    MC.depth = depths
+    MC.sigma_multiplication = sigmults
+    MC.num_trials = trials
     start = time.time()
     result = MC.evaluate()
     print('Result for qx = ',i, ': ', result[0], ' with error: ', result[1])
