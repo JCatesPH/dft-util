@@ -17,10 +17,10 @@ import numba
 # # Define constants in function
 
 mu = 0.1  # Fermi-level
-hOmg = 0.5  # Photon energy eV
+hOmg = 0.3  # Photon energy eV
 a = 4  # AA
 A = 4  # hbar^2/(2m)=4 evAA^2 (for free electron mass)
-rati = 0.01 # ratio
+rati = 0.3 # ratio
 eE0 = rati * ((hOmg) ** 2) / (2 * np.sqrt(A * mu))
 # print(eE0)
 Gamm = 0.003  # Gamma in eV.
@@ -31,7 +31,7 @@ Gammsq = Gamm ** 2
 
 @numba.cuda.jit(device=True)
 def modDsN2(x):
-    N = 1
+    N = 3
     dds = 0
     # ds = 0 # UNUSED
     qx = helpers.getqx()
@@ -40,7 +40,7 @@ def modDsN2(x):
     xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
     xkq = 2 * A * eE0 * math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2) / hOmg ** 2
 
-    singmatrix = numba.cuda.shared.array((10,N),dtype=numba.types.complex128)  
+    singmatrix = numba.cuda.shared.array((10,N),dtype=numba.types.complex64)  
 
     n = 0
     i = -(N - 1) / 2
@@ -76,7 +76,7 @@ def modDsN2(x):
 
 
     size_dbl = 5
-    dblmatrix = numba.cuda.shared.array((9,size_dbl),dtype=numba.types.complex128)
+    dblmatrix = numba.cuda.shared.array((9,size_dbl),dtype=numba.types.complex64)
 
     n = 0
     for i in range(-(N - 1), N, 1):
@@ -106,13 +106,13 @@ def modDsN2(x):
         dblmatrix[8,n] = fac2i - ek + ekq
         n = n + 1
 
-    sdr00 = numba.cuda.shared.array((N,N), dtype=numba.types.complex128)
-    sdr42 = numba.cuda.shared.array((N,N), dtype=numba.types.complex128)
-    sdr11 = numba.cuda.shared.array((N,N), dtype=numba.types.complex128)
-    sdr20 = numba.cuda.shared.array((N,N), dtype=numba.types.complex128)
-    sdr53 = numba.cuda.shared.array((N,N), dtype=numba.types.complex128)
-    sdsdr3173 = numba.cuda.shared.array((N,N), dtype=numba.types.complex128)
-    sdr62 = numba.cuda.shared.array((N,N), dtype=numba.types.complex128)
+    sdr00 = numba.cuda.shared.array((N,N), dtype=numba.types.complex64)
+    sdr42 = numba.cuda.shared.array((N,N), dtype=numba.types.complex64)
+    sdr11 = numba.cuda.shared.array((N,N), dtype=numba.types.complex64)
+    sdr20 = numba.cuda.shared.array((N,N), dtype=numba.types.complex64)
+    sdr53 = numba.cuda.shared.array((N,N), dtype=numba.types.complex64)
+    sdsdr3173 = numba.cuda.shared.array((N,N), dtype=numba.types.complex64)
+    sdr62 = numba.cuda.shared.array((N,N), dtype=numba.types.complex64)
 
     for s in range(0, N):
         for dummy in range(0, N):
@@ -189,14 +189,14 @@ def modDsN2(x):
                             glga = bess2 * (omint2p - omint2m)
 
                             dds = dds + Gamm * (grgl + glga)
-    return -4 * dds.real / math.pi ** 2
+    return -8 * dds.real / math.pi ** 3
 
 
 tic = time.time()
 
 depths = 2
-sigmults = 20
-trials = 12
+sigmults = 1E3
+trials = 10
 
 print('Following values are constant for all integrations.')
 print('\n========================================================')
@@ -211,9 +211,9 @@ print('kyf = math.pi / a')
 print('\n========================================================')
 
 # Setting up first 10 points on 100 point interval [0.001, pi/4]
-qinitial = 0.001
-qfinal = .0785
-spacing = 10
+#qinitial = 0.001
+#qfinal = .0785
+#spacing = 10
 
 # SET PARAMETERS AND LIMITS OF INTEGRATION
 kxi = - math.pi / a
@@ -222,12 +222,12 @@ kxf = math.pi / a
 kyi = - math.pi / a
 kyf = math.pi / a
 
-resultArr = np.zeros(spacing)
-errorArr = np.zeros(spacing)
-timeArr = np.zeros(spacing)
+resultArr = np.zeros(7)
+errorArr = np.zeros(7)
+timeArr = np.zeros(7)
 
 j = 0
-for i in np.linspace(qinitial, qfinal, spacing):
+for i in [0.1, 0.3, 0.4, 0.45, 0.55, 0.7, 0.9]:
 
     helpers.setqx(i)
     MC = ZMCIntegral.MCintegral(modDsN2,[[kxi,kxf],[kyi,kyf]])
