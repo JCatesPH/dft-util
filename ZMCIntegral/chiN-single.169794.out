@@ -13,7 +13,7 @@ kyf = math.pi / a
 
 ========================================================
 0 hypercube(s) need(s) to be recalculated, to save time, try drastically increasing sigma_multiplication.
-Result for qx =  0.1 :  0.9500712939095928  with error:  0.013791852041660339
+Result for qx =  0.1 :  0.9475401326053683  with error:  0.004628583931398811
 ================================================================
-Computed in  5654.660549879074  seconds.
+Computed in  5654.7934193611145  seconds.
 ================================================================
