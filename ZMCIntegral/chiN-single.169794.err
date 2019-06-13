@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./chi-N3-single_v65.py", line 258, in <module>
+    for i in np.linspace(qinitial, qfinal, spacing):
+NameError: name 'qinitial' is not defined
+srun: error: gpu-0-0: task 0: Exited with exit code 1

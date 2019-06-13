@@ -1,0 +1,11 @@
+2019-06-06 23:09:37.087193: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
+2019-06-06 23:09:37.107423: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2100000000 Hz
+2019-06-06 23:09:37.107529: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x55f28b1706a0 executing computations on platform Host. Devices:
+2019-06-06 23:09:37.107540: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+Traceback (most recent call last):
+  File "./zmc-tf-test1.py", line 15, in <module>
+    MC = ZMCintegral.MCintegral(testfoo, [[0,2], [1,4], [2,3], [4,6]])
+  File "/home/jmcates/my-phys-util/zmc-tf/ZMCintegral.py", line 76, in __init__
+    raise AssertionError("Your computer does not support GPU calculation.")
+AssertionError: Your computer does not support GPU calculation.
+srun: error: gpu-0-0: task 0: Exited with exit code 1

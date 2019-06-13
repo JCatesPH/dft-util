@@ -1,0 +1,5 @@
+  File "./cupy-test.py", line 43
+    y[i] = devicefoo(x[i]) * i
+                             ^
+TabError: inconsistent use of tabs and spaces in indentation
+srun: error: gpu-0-0: task 0: Exited with exit code 1

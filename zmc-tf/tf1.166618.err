@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "./zmc-tf-test1.py", line 15, in <module>
+    MC = ZMCintegral.MCintegral(testfoo, [[0,2], [1,4], [2,3], [4,6]])
+  File "/home/jmcates/my-phys-util/zmc-tf/ZMCintegral.py", line 76, in __init__
+    raise AssertionError("Your computer does not support GPU calculation.")
+AssertionError: Your computer does not support GPU calculation.
+srun: error: gpu-0-0: task 0: Exited with exit code 1

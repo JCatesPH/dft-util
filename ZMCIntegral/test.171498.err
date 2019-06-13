@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./cupy-test.py", line 47, in <module>
+    v = np.array([2,2,2])
+NameError: name 'np' is not defined
+srun: error: gpu-0-0: task 0: Exited with exit code 1

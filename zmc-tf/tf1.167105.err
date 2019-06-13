@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./zmc-tf-test1.py", line 11, in <module>
+    import slurm_manager as sm
+ModuleNotFoundError: No module named 'slurm_manager'
+srun: error: gpu-0-0: task 0: Exited with exit code 1
