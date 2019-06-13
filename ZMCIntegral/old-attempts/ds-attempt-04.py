@@ -11,8 +11,8 @@
 # "Hi Jalen, what we need is a plot of the integrated result as a function of qx. My postdoc Mahmoud has a plot for that he obtained previously from another integration method that we can compare your MC results with. "
 
 
-# # # CHANGE LOG :
-#   v4 :
+# # # CHANGE LOG : 
+#   v4 : 
 #       Extended Bessel function to eight terms and applied Horner's Algorithm to it for numerical efficiency.
 #           Eight terms is not enough as z > 1. So, ELEVEN terms will be used. n = 11 => err <~ E-14
 #       Removing commented out code for readability. Retaining copy with commented code as well.
@@ -26,8 +26,6 @@ from numba import cuda
 import scipy
 import scipy.special
 import ZMCIntegral
-import helpers
-
 
 # Define constants in function
 
@@ -35,18 +33,20 @@ mu = 0.1  # Fermi-level
 hOmg = 0.5  # Photon energy eV
 a = 4  # AA
 A = 4  # hbar^2/(2m)=4 evAA^2 (for free electron mass)
-rati = 0.01  # ratio
+rati = 0.3  # ratio
 eE0 = rati * ((hOmg) ** 2) / (2 * np.sqrt(A * mu))
 # print(eE0)
-Gamm = 0.003  # Gamma in eV.
+Gamm = 0.005  # Gamma in eV.
+KT = 1 * 10 ** (-6)
 shift = A * (eE0 / hOmg) ** 2
 
 
 # Function given with slight modification. I replaced all calls to kx, ky, qx, and qy with x[0], x[1], x[2], and x[3] respectively. This modification effectively "vectorizes" the input.
+
 sing = np.array([0.])
 
 @cuda.jit(device=True)
-def my_heaviside(z):
+def my_heaviside(z): 
     # Wrote this Heaviside expression with it cast in cuda to avoid error below.
     if z <= 0 :
 	    return 0
@@ -56,36 +56,20 @@ def my_heaviside(z):
 @cuda.jit(device=True)
 def my_Bessel(z):
     # CHANGE FOR v4: Changing polynomial evaluation for efficiency (SEE Horner's Algorithm). Extending number of terms.
-    # Carrying the series to eight terms ensures that the error in the series is < machine_epsilon when z < 1.
+    # Carrying the series to eight terms ensures that the error in the series is < machine_epsilon when z < 1. 
     # Approximately: z1 <~ 2.1, z2 <~ 3.33  implies  error <~ 2.15E-6
     val = z**2 / 4 * (-1 + z**2 / 16 * (1 + z**2 / 36 * (-1 + z**2 / 64 * (1 + z**2 / 100 * (-1 + z**2 / 144 * (1 + z**2 / 196 * (-1 + z**2 / 256)))))))
     return val + 1
 
-# Initialize the variable qx as global
-qx = 0
-# print('qx = ', qx)
-# Helper function to set qx
-def setqx(qxi):
-	global qx
-	qx = qxi
-	return
 
-# Helper function to get qx
-@cuda.jit(device=True)
-def getqx():
-    return qx
 
 @cuda.jit(device=True)
 def modDs_real(x):
     dds = 0
-    qx = getqx()
-
-
-
     ek = A * (math.sqrt((x[0]) ** 2 + (x[1]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
-    ekq = A * (math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
+    ekq = A * (math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2)) ** 2 + A * (eE0 / hOmg) ** 2
     xk = 2 * A * eE0 * math.sqrt((x[0]) ** 2 + (x[1]) ** 2) / hOmg ** 2
-    xkq = 2 * A * eE0 * math.sqrt((x[0] + qx) ** 2 + (x[1] + 0) ** 2) / hOmg ** 2
+    xkq = 2 * A * eE0 * math.sqrt((x[0] + x[2]) ** 2 + (x[1] + x[3]) ** 2) / hOmg ** 2
 
     ts1 = ek - hOmg / 2
     ts2 = ekq - hOmg / 2
@@ -126,14 +110,12 @@ def modDs_real(x):
     lg1kqp = complex(0, 1) * ln2
     lg1km = complex(0, 1) * ln3
     lg1kqm = complex(0, 1) * ln4
-
+	
     heavi1 = mu - hOmg / 2
     heavi2 = mu + hOmg / 2
 
-
-    ferp = helpers.my_heaviside(heavi1)
-    ferm = helpers.my_heaviside(heavi2)
-
+    ferp = my_heaviside(heavi1)
+    ferm = my_heaviside(heavi2)
 
     taninv2k = 2 * math.atan2(Gamm, ek - mu)
     taninv2kq = 2 * math.atan2(Gamm, ekq - mu)
@@ -141,8 +123,8 @@ def modDs_real(x):
     lg2k = complex(0, 1) * math.log(Gamm ** 2 + (ek - mu) ** 2)
     lg2kq = complex(0, 1) * math.log(Gamm ** 2 + (ekq - mu) ** 2)
 
-    besk = helpers.my_Bessel(xk)
-    beskq = helpers.my_Bessel(xkq)
+    besk = my_Bessel(xk)
+    beskq = my_Bessel(xkq)
 
     fac1 = ek - ekq
 
@@ -186,11 +168,9 @@ def modDs_real(x):
 
     glga = bess2 * (omint2p - omint2m)
 
+    dds = dds + 2 * Gamm * (grgl + glga)
 
-    dds = dds + Gamm * (grgl + glga)
-
-    return - 4 * dds.real / math.pi**2
-
+    return dds.real / (8*math.pi**3)
 
 
 # # Mahmoud:
@@ -201,115 +181,70 @@ def modDs_real(x):
 
 # Introducing suggested values of integration.
 
+kxi = - math.pi / a
+kxf = math.pi / a
+
+kyi = - math.pi / a
+kyf = math.pi / a
+
+qxi = 0.001
+qxf = math.pi / a
+
+qyi = 0
+qyf = 0
 
 
-tic = time.time()
+print('\n========================================================')
+print('\nThe limits of integration:')
+print('  kx = (', kxi, ', ', kxf, ')')
+print('  ky = (', kyi, ', ', kyf, ')')
+print('  qx = (', qxi, ', ', qxf, ')')
+print('  qy = (', qyi, ', ', qyf, ')')
 
+# Creating the ZMCintegral object for evaluation.
 
+MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf],[qxi,qxf],[qyi,qyf]])
+
+# Setting the zmcintegral parameters
+MC.depth = 3
+MC.sigma_multiplication = 10**20
+MC.num_trials = 10
 # MC.available_GPU=[0]
 
-print('Following values are constant for all integrations.')
+
 print('\n========================================================')
-print('\ndepth = 3')
-print('sigma_multiplication = 100')
-print('num_trials = 10')
-print('available_GPU = [0]')
+print('\ndepth = ', MC.depth)
+print('sigma_multiplication = ', MC.sigma_multiplication)
+print('num_trials = ', MC.num_trials)
+print('available_GPU = ', MC.available_GPU)
 print('\n========================================================')
 
-start = time.time()
 
-# SET PARAMETERS AND LIMITS OF INTEGRATION
-kxi = - math.pi / a
-kxf = math.pi / a
-
-kyi = - math.pi / a
-kyf = math.pi / a
-
-setqx(0.01)
-
-MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
-
-# Setting the zmcintegral parameters
-MC.depth = 3
-MC.sigma_multiplication = 100
-MC.num_trials = 10
-
-result1 = MC.evaluate()
-print('Result for qx = ',qx, ': ', result1[0], ' with error: ', result1[1])
-print('================================================================')
-end = time.time()
-print('Computed in ', end-start, ' seconds.')
-print('================================================================')
-print('================================================================')
-
+# # Evaluating integral:
 
 start = time.time()
-
-# SET PARAMETERS AND LIMITS OF INTEGRATION
-kxi = - math.pi / a
-kxf = math.pi / a
-
-kyi = - math.pi / a
-kyf = math.pi / a
-
-setqx(0.05)
-
-MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
-
-# Setting the zmcintegral parameters
-MC.depth = 3
-MC.sigma_multiplication = 100
-MC.num_trials = 10
-
-result2 = MC.evaluate()
-print('Result for qx = ',qx, ': ', result2[0], ' with error: ', result2[1])
-print('================================================================')
+result = MC.evaluate()
 end = time.time()
+
+print('\n========================================================')
+print('\nThe limits of integration:')
+print('  kx = (', kxi, ', ', kxf, ')')
+print('  ky = (', kyi, ', ', kyf, ')')
+print('  qx = (', qxi, ', ', qxf, ')')
+print('  qy = (', qyi, ', ', qyf, ')')
+print('\n========================================================')
+print('\ndepth = ', MC.depth)
+print('sigma_multiplication = ', MC.sigma_multiplication)
+print('num_trials = ', MC.num_trials)
+print('available_GPU = ', MC.available_GPU)
+print('\n========================================================')
+print('\n========================================================')
+print('Integration is complete!')
+print('\n========================================================')
+print('Result: ', result[0])
+print('std.  : ', result[1])
 print('Computed in ', end-start, ' seconds.')
-print('================================================================')
-print('================================================================')
-
-start = time.time()
-
-# SET PARAMETERS AND LIMITS OF INTEGRATION
-kxi = - math.pi / a
-kxf = math.pi / a
-
-kyi = - math.pi / a
-kyf = math.pi / a
-
-setqx(0.1)
-
-MC = ZMCIntegral.MCintegral(modDs_real,[[kxi,kxf],[kyi,kyf]])
-
-# Setting the zmcintegral parameters
-MC.depth = 3
-MC.sigma_multiplication = 100
-MC.num_trials = 10
-
-result3 = MC.evaluate()
-print('Result for qx = ',qx, ': ', result3[0], ' with error: ', result3[1])
-print('================================================================')
-end = time.time()
-print('Computed in ', end-start, ' seconds.')
-print('================================================================')
-print('================================================================')
+print('\n========================================================')
 
 
-
-
-print('================================================================')
-print('kxi  | kxf  | kyi  | kyf  | qx  | qy   | integrand | err')
-print('================================================================')
-
-print('%.3f|%.3f|%.3f|%.3f| 0.01 | 0    |%11.8E| %.3E ' % (kxi,kyf, kyi, kyf,result1[0], result1[1]))
-print('%.3f|%.3f|%.3f|%.3f| 0.05 | 0    |%11.8E| %.3E ' % (kxi,kyf, kyi, kyf,result2[0], result2[1]))
-print('%.3f|%.3f|%.3f|%.3f| 0.1  | 0    |%11.8E| %.3E ' % (kxi,kyf, kyi, kyf,result3[0], result3[1]))
-
-print('================================================================')
-
-toc = time.time()
-print('================================================================\n')
-print('Process completed successfully!')
-print('Total time is ', toc-tic, 'seconds.')
-
+# print(result[2]) # DOES NOT WORK
