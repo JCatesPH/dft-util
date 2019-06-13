@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "./const-param-test.py", line 33, in <module>
-    setqx(0.1)
-TypeError: 'DeviceFunctionTemplate' object is not callable
-srun: error: gpu-0-0: task 0: Exited with exit code 1

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./cupy-test.py", line 12, in <module>
+    c = cupy.identity(3,3,dtype=cupy.float)
+TypeError: identity() got multiple values for argument 'dtype'
+srun: error: gpu-0-0: task 0: Exited with exit code 1

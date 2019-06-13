@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./cupy-test.py", line 17, in <module>
+    d = cupy.identity(3, dtype=cupy.float32, k=1)
+TypeError: identity() got an unexpected keyword argument 'k'
+srun: error: gpu-0-0: task 0: Exited with exit code 1

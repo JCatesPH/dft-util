@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "./zmc-tf-test1.py", line 20, in <module>
+    tf.gpu_options.allow_growth=True
+AttributeError: module 'tensorflow' has no attribute 'gpu_options'
+srun: error: gpu-0-0: task 0: Exited with exit code 1

@@ -19,7 +19,6 @@ import random
 import os
 from numba.cuda.random import create_xoroshiro128p_states, xoroshiro128p_uniform_float64
 
-CHUNK_RESULTS = []
 
 class MCintegral():
 
@@ -93,7 +92,7 @@ class MCintegral():
         if len(large_std_chunk_id) == 0:
             return np.sum(MCresult_chunks,0), np.sqrt(np.sum(MCresult_std_chunks**2))
 
-        CHUNK_RESULTS = MCresult_chunks
+#        setChunks(MCresult_chunks)
 
         return np.sum(MCresult_chunks,0), np.sqrt(np.sum(MCresult_std_chunks**2))
 

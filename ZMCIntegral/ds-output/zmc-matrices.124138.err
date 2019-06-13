@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "./matrices-attempt-01.py", line 20, in <module>
-    import ZMCIntegral
-  File "/home/jmcates/ZMCIntWS/my-phys-util/ZMCIntegral/ZMCIntegral.py", line 76
-    print('{} hypercube(s) need(s) to be recalculated, to save time, try drastically increasing 
-                                                                                               ^
-SyntaxError: EOL while scanning string literal
-srun: error: gpu-0-0: task 0: Exited with exit code 1

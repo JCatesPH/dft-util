@@ -1,0 +1,87 @@
+Traceback (most recent call last):
+  File "./cupy-test.py", line 54, in <module>
+    cudafoo[32,1](x, y, N, z)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/cuda/compiler.py", line 765, in __call__
+    kernel = self.specialize(*args)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/cuda/compiler.py", line 776, in specialize
+    kernel = self.compile(argtypes)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/cuda/compiler.py", line 792, in compile
+    **self.targetoptions)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler_lock.py", line 32, in _acquire_compile_lock
+    return func(*args, **kwargs)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/cuda/compiler.py", line 62, in compile_kernel
+    cres = compile_cuda(pyfunc, types.void, args, debug=debug, inline=inline)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler_lock.py", line 32, in _acquire_compile_lock
+    return func(*args, **kwargs)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/cuda/compiler.py", line 51, in compile_cuda
+    locals={})
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 941, in compile_extra
+    return pipeline.compile_extra(func)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 372, in compile_extra
+    return self._compile_bytecode()
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 872, in _compile_bytecode
+    return self._compile_core()
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 859, in _compile_core
+    res = pm.run(self.status)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler_lock.py", line 32, in _acquire_compile_lock
+    return func(*args, **kwargs)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 253, in run
+    raise patched_exception
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 244, in run
+    stage()
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 500, in stage_nopython_frontend
+    self.locals)
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/compiler.py", line 1044, in type_inference_stage
+    infer.propagate()
+  File "/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/typeinfer.py", line 861, in propagate
+    raise errors[0]
+numba.errors.TypingError: Failed in nopython mode pipeline (step: nopython frontend)
+Invalid use of Function(<numba.cuda.compiler.DeviceFunctionTemplate object at 0x2adaa4ef9d68>) with argument(s) of type(s): (array(int64, 1d, A), array(float64, 1d, A))
+ * parameterized
+In definition 0:
+    TypingError: Failed in nopython mode pipeline (step: nopython frontend)
+Unknown attribute 'transpose' of type Module(<module 'cupy' from '/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/cupy/__init__.py'>)
+
+File "cupy-test.py", line 30:
+def devicefoo(a,b):
+	c = cupy.transpose(a)
+ ^
+
+[1] During: typing of get attribute at ./cupy-test.py (30)
+
+File "cupy-test.py", line 30:
+def devicefoo(a,b):
+	c = cupy.transpose(a)
+ ^
+
+    raised from /home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/typeinfer.py:861
+In definition 1:
+    TypingError: Failed in nopython mode pipeline (step: nopython frontend)
+Unknown attribute 'transpose' of type Module(<module 'cupy' from '/home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/cupy/__init__.py'>)
+
+File "cupy-test.py", line 30:
+def devicefoo(a,b):
+	c = cupy.transpose(a)
+ ^
+
+[1] During: typing of get attribute at ./cupy-test.py (30)
+
+File "cupy-test.py", line 30:
+def devicefoo(a,b):
+	c = cupy.transpose(a)
+ ^
+
+    raised from /home/jmcates/miniconda3/envs/zmcint/lib/python3.6/site-packages/numba/typeinfer.py:861
+This error is usually caused by passing an argument of a type that is unsupported by the named function.
+[1] During: resolving callee type: Function(<numba.cuda.compiler.DeviceFunctionTemplate object at 0x2adaa4ef9d68>)
+[2] During: typing of call at ./cupy-test.py (46)
+
+
+File "cupy-test.py", line 46:
+def cudafoo(x, y, N, z):
+    <source elided>
+	
+	z[i] = devicefoo(x,y)
+ ^
+
+srun: error: gpu-0-0: task 0: Exited with exit code 1
