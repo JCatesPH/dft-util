@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "./zmc-tf-test1.py", line 13, in <module>
-    sm.SlurmClusterManager().build_cluster_spec()
-  File "/home/jmcates/my-phys-util/zmc-tf/slurm_manager.py", line 20, in __init__
-    self.hostnames = hostlist.expand_hostlist(os.environ['SLURM_JOB_NODELIST']) # expands 'NAME1(x2),NAME2' -> 'NAME1,NAME1,NAME2'
-AttributeError: module 'hostlist' has no attribute 'expand_hostlist'
-srun: error: gpu-0-0: task 0: Exited with exit code 1

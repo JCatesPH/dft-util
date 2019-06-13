@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "./zmc-tf-test1.py", line 14, in <module>
-    cluster, my_job_name, my_task_index = tf_config_from_slurm(ps_number=1)
-  File "/home/jmcates/miniconda3/envs/tensorflow/lib/python3.7/site-packages/tensorflow_on_slurm/tensorflow_on_slurm.py", line 23, in tf_config_from_slurm
-    nodelist = _expand_nodelist(nodelist)
-  File "/home/jmcates/miniconda3/envs/tensorflow/lib/python3.7/site-packages/tensorflow_on_slurm/tensorflow_on_slurm.py", line 63, in _expand_nodelist
-    prefix, ids = re.findall("(.*)\[(.*)\]", nodelist)[0]
-IndexError: list index out of range
-srun: error: gpu-0-0: task 0: Exited with exit code 1

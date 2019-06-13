@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "./cupy-test.py", line 6, in <module>
-    result = numpy.sum(arr)
-NameError: name 'numpy' is not defined
-srun: error: gpu-0-0: task 0: Exited with exit code 1

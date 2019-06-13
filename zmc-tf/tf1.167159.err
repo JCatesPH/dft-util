@@ -1,5 +1,0 @@
-  File "./zmc-tf-test1.py", line 17
-    job_name=my_job_name,
-    ^
-IndentationError: unexpected indent
-srun: error: gpu-0-0: task 0: Exited with exit code 1

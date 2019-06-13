@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "./DINV.py", line 33, in <module>
-    @numba.cuda.jit(device=True)
-NameError: name 'numba' is not defined
-srun: error: gpu-0-0: task 0: Exited with exit code 1

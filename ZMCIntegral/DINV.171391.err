@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "./DINV.py", line 80, in <module>
-    test = ds(0.1, 0.1, 0.01, 0, 0.09)
-TypeError: 'DeviceFunctionTemplate' object is not callable
-srun: error: gpu-0-0: task 0: Exited with exit code 1
